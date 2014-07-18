@@ -131,7 +131,7 @@
 					var keyName = this.keyMap[keyCode];
 					if (keyName) {
 						if (keyName === 'ok') {
-							if (this.click) this.click();
+							if(this.click) this.click();
 						}
 						else {
 							//press arrow key
@@ -286,8 +286,9 @@
 		},
 		keyHolder: function(evt){
 			//evt.stopPropagation();
-			if (x$.Box.enable && x$.Box.currentIndex != -1)
-				x$.Box.current.keyHandler(evt);
+			var xb = x$.Box ;
+			if (xb.enable && xb.currentIndex != -1)
+				xb.current.keyHandler(evt);
 		},
 		active: function(evtName){
 			if(this.currentIndex === -1 && this.boxes.length) {

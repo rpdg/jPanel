@@ -117,7 +117,9 @@ x$.hasClass = function (elem, className) {
 };
 
 x$.addClass = function (elem , className) {
-	if (!x$.hasClass(elem, className)) elem.className += (elem.className ? ' ' : '') + className;
+	var classList = ' ' + elem.className + ' ';
+	if (classList.indexOf(' ' + className + ' ') === -1)
+		elem.className += (classList ? ' ' : '') + className;
 };
 
 x$.removeClass = function (elem, className) {

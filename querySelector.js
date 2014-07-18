@@ -2,16 +2,14 @@
 
 var x$ = function (selector, context) {
 	// Handle x$(""), x$(null), or x$(undefined)
-	if (!selector) {
-		return [];
-	}
+	if (!selector)  return [];
 
-	// Handle x$(DOMElement)
-	if (selector.nodeType) {
-		return [selector] ;
+	else{
+		// Handle x$(DOMElement)
+		if (selector.nodeType)
+			return [selector];
+		else
+			return Array.prototype.slice.call((context || document).querySelectorAll(selector));
 	}
-
-	else
-	return Array.prototype.slice.call((context || document).querySelectorAll(selector));
 };
 
