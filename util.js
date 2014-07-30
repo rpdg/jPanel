@@ -276,8 +276,8 @@ x$.getJSON = (function (jPanel) {
 
 
 x$.on = function (evn, fn) {
-	this.listeners[++this.idSeed] = fn;
-	return idSeed;
+	x$.on.listeners[++x$.on.idSeed] = fn;
+	return x$.on.idSeed ;
 };
 x$.on.idSeed = -1;
 x$.on.listeners = {};
