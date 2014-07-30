@@ -257,6 +257,15 @@
 			}
 			return this;
 		},
+		removeGrid: function(i){
+			if(this.currentIndex === i) {
+				this.current = null ;
+				this.currentIndex = -1 ;
+			}
+			this.boxes.splice(i,1) ;
+			this.jumpTo(this.previous) ;
+			return this;
+		} ,
 		jumpTo: function (i, j) {
 			if (i instanceof x$.Grid) {
 				i = i.boxIndex;
@@ -295,7 +304,7 @@
 				this.jumpTo(0) ;
 			}
 			this.eventName = evtName || this.eventName;
-			document.addEventListener(this.eventName, this.keyHolder);
+			x$.on(this.eventName, this.keyHolder);
 			return this;
 		},
 		inactive: function(){

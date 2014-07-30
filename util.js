@@ -13,16 +13,16 @@ x$.EMPTY_FN = function () {
 
 //
 x$.browser = window.navigator.userAgent;
-x$.version = '0.2' ;
+x$.version = '0.21';
 
 //
-x$.byId = function(str){
+x$.byId = function (str) {
 	return document.getElementById(str);
 };
-x$.byClass = function(clsName , context){
+x$.byClass = function (clsName, context) {
 	return (context || document).getElementsByClassName(clsName);
 };
-x$.byTag =  function(clsName , context){
+x$.byTag = function (clsName, context) {
 	return (context || document).getElementsByTagName(clsName);
 };
 //
@@ -113,38 +113,38 @@ x$.activeLog = function (active) {
 
 x$.hasClass = function (elem, className) {
 	var classList = ' ' + elem.className + ' ';
-	return classList.indexOf(' ' + className + ' ') > -1 ;
+	return classList.indexOf(' ' + className + ' ') > -1;
 };
 
-x$.addClass = function (elem , className) {
+x$.addClass = function (elem, className) {
 	var classList = ' ' + elem.className + ' ';
 	if (classList.indexOf(' ' + className + ' ') === -1)
 		elem.className += (classList ? ' ' : '') + className;
 };
 
 x$.removeClass = function (elem, className) {
-	var classList = ' ' + elem.className + ' ' , ts = ' ' + className + ' ' , cur = classList.indexOf(ts) ;
-	if(cur > -1) elem.className = classList.substr(1 , cur) + classList.substring(cur + className.length + 2 , classList.length-1);
+	var classList = ' ' + elem.className + ' ' , ts = ' ' + className + ' ' , cur = classList.indexOf(ts);
+	if (cur > -1) elem.className = classList.substr(1, cur) + classList.substring(cur + className.length + 2, classList.length - 1);
 };
 
-x$.toggleClass = function (elem , className) {
+x$.toggleClass = function (elem, className) {
 	return x$[x$.hasClass(elem, className) ? 'removeClass' : 'addClass'](elem, className);
 };
 
 
-x$.attr = function(elem , attr , value){
-	if(value !== undefined){
-		return elem.setAttribute(attr , value) ;
+x$.attr = function (elem, attr, value) {
+	if (value !== undefined) {
+		return elem.setAttribute(attr, value);
 	}
 	else {
-		return elem.getAttribute(attr) ;
+		return elem.getAttribute(attr);
 	}
 };
 
 x$.formatJSON = (function () {
 	var pattern = /\{(\w*[:]*[=]*\w+)\}(?!})/g;
-	return function (template , json) {
-		return template.replace(pattern , function (match , key , value) {
+	return function (template, json) {
+		return template.replace(pattern, function (match, key, value) {
 			return json[key];
 		});
 	}
@@ -161,7 +161,7 @@ x$.request = (function () {
 	for (; i < len; i++) {
 		if (!seg[i]) continue;
 		s = seg[i].split('=');
-		ret[s[0]] = s[1] ;
+		ret[s[0]] = s[1];
 		/*try{
 		 ret[s[0]] = decodeURI(s[1]);
 		 }
@@ -249,7 +249,7 @@ x$.getJSON = (function (jPanel) {
 					catch (e) {
 						if (req.handleErr) req.handleErr(e.message, req.responseText);
 					}
-					req.handleResp(obj , x$);
+					req.handleResp(obj, x$);
 				}
 				else {
 					if (req.handleErr) req.handleErr('Server error: ' + req.status, req.responseText);
@@ -274,21 +274,47 @@ x$.getJSON = (function (jPanel) {
 
 })(x$);
 
-/*
-x$.share = {
-	data: function (name, value) {
-		var top = window.top,
-			cache = top['__CACHE'] || {};
-		top['__CACHE'] = cache;
 
-		return value === undefined ? cache[name] : (cache[name] = value) ;
-	},
-	remove: function (name) {
-		var cache = window.top['__CACHE'];
-		if (cache && cache[name]) delete cache[name];
-	}
+x$.on = function (evn, fn) {
+	this.listeners[++this.idSeed] = fn;
+	return idSeed;
 };
-*/
+x$.on.idSeed = -1;
+x$.on.listeners = {};
+
+document.onkeydown = function (evt) {
+	//主页
+	if (evt.keyCode == 72) {
+		history.back();
+		return false;
+	}
+	//后退
+	if (evt.keyCode == 8) {
+		history.back();
+		return false;
+	}
+
+	var ls = x$.on.listeners;
+	for (var fn in ls) ls[fn].call(window, evt);
+
+	return false;
+};
+
+/*
+ x$.share = {
+ data: function (name, value) {
+ var top = window.top,
+ cache = top['__CACHE'] || {};
+ top['__CACHE'] = cache;
+
+ return value === undefined ? cache[name] : (cache[name] = value) ;
+ },
+ remove: function (name) {
+ var cache = window.top['__CACHE'];
+ if (cache && cache[name]) delete cache[name];
+ }
+ };
+ */
 
 (function (x$) {
 	// the setting cache for bindUrl and bindList use
@@ -352,8 +378,8 @@ x$.share = {
 	// sets.onBound  : [event]
 	// sets.joiner : 各个结果的连接字符，默认空
 	// set['null'] : 将值为null的属性作何种显示，默认显示为empty string
-	x$.bindList = function (elem , sets) {
-		if(!elem.nodeType){
+	x$.bindList = function (elem, sets) {
+		if (!elem.nodeType) {
 			elem = x$(elem)[0]
 		}
 		var cacheId = elem.id || elem.uniqueID || (function () {
@@ -412,14 +438,14 @@ x$.share = {
 		return elem;
 	};
 
-	x$.bindLists = function (elems , sets) {
+	x$.bindLists = function (elems, sets) {
 		var cache;
 
 		if (sets.mode === "setCache") cache = sets.cache;
 		else  cache = boundCache.make(sets);
 
-		for (var i= 0,l=elems.length ; i<l ; i++){
-			var o = elems[i] ;
+		for (var i = 0, l = elems.length; i < l; i++) {
+			var o = elems[i];
 			var cacheId = o.id || o.uniqueID || (function () {
 				o.id = boundCache.newId();
 				return o.id;
@@ -431,7 +457,7 @@ x$.share = {
 		var len = Math.min(l, sets.lists.length);
 		for (var j = 0; j < len; j++) {
 			sets.list = sets.lists[j];
-			x$.bindList(elems[j] , sets);
+			x$.bindList(elems[j], sets);
 		}
 
 		if (typeof(sets.onAllComplete) === 'function') {
