@@ -281,11 +281,12 @@ x$.on = function (evn, fn) {
 };
 x$.on.idSeed = -1;
 x$.on.listeners = {};
-
+x$.on.homepage = '';
+//
 document.onkeydown = function (evt) {
 	//主页
 	if (evt.keyCode == 72) {
-		history.back();
+		location.href = x$.on.homepage ;
 		return false;
 	}
 	//后退
