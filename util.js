@@ -285,9 +285,11 @@ x$.on.homepage = '';
 //
 document.onkeydown = function (evt) {
 	//主页
-	if (evt.keyCode == 72) {
-		location.href = x$.on.homepage ;
-		return false;
+	if (evt.keyCode == 72 && x$.on.homepage) {
+		if(x$.on.homepage){
+			location.href = x$.on.homepage ;
+			return false;
+		}
 	}
 	//后退
 	if (evt.keyCode == 8) {
@@ -298,7 +300,6 @@ document.onkeydown = function (evt) {
 	var ls = x$.on.listeners;
 	for (var fn in ls) ls[fn].call(window, evt);
 
-	return false;
 };
 
 /*
