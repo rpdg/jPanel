@@ -274,7 +274,9 @@ x$.getJSON = (function (jPanel) {
 
 })(x$);
 
-
+x$.off = function(handler){
+	delete x$.on.listeners[handler] ;
+} ;
 x$.on = function (evn, fn) {
 	x$.on.listeners[++x$.on.idSeed] = fn;
 	return x$.on.idSeed ;
@@ -283,22 +285,28 @@ x$.on.idSeed = -1;
 x$.on.listeners = {};
 x$.on.homepage = '';
 //
-document.onkeydown = function (evt) {
+document.onkeydown = function(evt){
+
+	var ls = x$.on.listeners;
+
+	for(var fn in ls){
+		var v = ls[fn].call(window, evt);
+		if(v===false) return v;
+	}
+
+	
 	//主页
-	if (evt.keyCode == 72 && x$.on.homepage) {
+	if(evt.keyCode == 72 && x$.on.homepage){
 		if(x$.on.homepage){
 			location.href = x$.on.homepage ;
 			return false;
 		}
 	}
 	//后退
-	if (evt.keyCode == 8) {
+	if(evt.keyCode == 8){
 		history.back();
 		return false;
 	}
-
-	var ls = x$.on.listeners;
-	for (var fn in ls) ls[fn].call(window, evt);
 
 };
 
