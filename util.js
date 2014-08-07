@@ -294,7 +294,7 @@ document.onkeydown = function(evt){
 		if(v===false) return v;
 	}
 
-	
+
 	//主页
 	if(evt.keyCode == 72 && x$.on.homepage){
 		if(x$.on.homepage){
