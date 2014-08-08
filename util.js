@@ -277,11 +277,30 @@ x$.getJSON = (function (jPanel) {
 x$.off = function(handler){
 	delete x$.on.listeners[handler] ;
 } ;
-x$.on = function (evn, fn) {
-	x$.on.listeners[++x$.on.idSeed] = fn;
-	return x$.on.idSeed ;
+x$.on = function (evn , fn , addToHead) {
+	if(addToHead) {
+		x$.on.listeners[--x$.on.seedMin] = fn;
+		x$.on.seeds.unshift(x$.on.seedMin) ;
+		//x$.on.seeds.sort();
+		return x$.on.seedMin ;
+	}
+	else {
+		x$.on.listeners[++x$.on.seedMax] = fn;
+		x$.on.seeds.push(x$.on.seedMax) ;
+		//x$.on.seeds.sort();
+		return x$.on.seedMax ;
+	}
 };
-x$.on.idSeed = -1;
+x$.once = function(evt , cb , addToHead){
+	var hdl = x$.on(evt , function(evn){
+		x$.off(hdl) ;
+		hdl = null;
+		return cb.call(window, evn) ;
+	} , addToHead) ;
+} ;
+x$.on.seeds = [] ;
+x$.on.seedMin = 0;
+x$.on.seedMax = -1;
 x$.on.listeners = {};
 x$.on.homepage = '';
 //
@@ -289,9 +308,12 @@ document.onkeydown = function(evt){
 
 	var ls = x$.on.listeners;
 
-	for(var fn in ls){
-		var v = ls[fn].call(window, evt);
-		if(v===false) return v;
+	for(var i = 0 , l = x$.on.seeds.length ; i < l ; i++){
+		var fn = ls[x$.on.seeds[i]] ;
+		if(fn){
+			var v = fn.call(window, evt);
+			if(v===false) return v;
+		}
 	}
 
 
