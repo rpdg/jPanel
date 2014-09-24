@@ -274,38 +274,39 @@ x$.getJSON = (function (jPanel) {
 
 })(x$);
 
-x$.off = function(handler){
-	delete x$.on.listeners[handler] ;
-	for(var i = 0 , l = x$.on.seeds.length ; i < l ; i++){
-		if(x$.on.seeds[i]==handler){
-			x$.on.seeds[i].splice(i , 1);
+x$.off = function(seed){
+	var b = false , ss = x$.on.seeds ;
+	for(var i = 0 , l = ss.length ; i < l ; i++){
+		if(ss[i]==seed){
+			ss.splice(i , 1);
+			delete x$.on.listeners[seed] ;
+			b = true ;
 			break ;
 		}
 	}
+	return b;
 } ;
+
 x$.on = function (evn , fn , addToHead) {
+	var seed ;
 	if(addToHead) {
-		x$.on.listeners[--x$.on.seedMin] = fn;
-		x$.on.seeds.unshift(x$.on.seedMin) ;
-		//x$.on.seeds.sort();
-		return x$.on.seedMin ;
+		seed = --x$.on.seedMin ;
+		x$.on.seeds.unshift(seed) ;
 	}
 	else {
-		x$.on.listeners[++x$.on.seedMax] = fn;
-		x$.on.seeds.push(x$.on.seedMax) ;
-		//x$.on.seeds.sort();
-		return x$.on.seedMax ;
+		seed = ++x$.on.seedMax ;
+		x$.on.seeds.push(seed) ;
 	}
+	x$.on.listeners[seed] = fn;
+	fn.seed = seed ;
+	return seed ;
 };
-x$.once = function(evt , cb , addToHead){
-	var hdl = x$.on(evt , function(evn){
-		x$.off(hdl) ;
-		hdl = null;
-		return cb.call(window, evn) ;
-	} , addToHead) ;
 
-	return hdl ;
+x$.once = function(evt , cb , addToHead){
+	cb.isOnce = true ;
+	return x$.on(evt , cb , addToHead) ;
 } ;
+
 x$.on.seeds = [] ;
 x$.on.seedMin = 0;
 x$.on.seedMax = -1;
@@ -314,11 +315,16 @@ x$.on.homepage = '';
 //
 document.onkeydown = function(evt){
 
-	var ls = x$.on.listeners;
+	var ls = x$.on.listeners , ss = x$.on.seeds ;
 
-	for(var i = 0 , l = x$.on.seeds.length ; i < l ; i++){
-		var fn = ls[x$.on.seeds[i]] ;
+
+	for(var i = 0 ; i < ss.length ; i++){
+		var fn = ls[ss[i]] ;
 		var v = fn.call(window, evt);
+		if(fn.isOnce) {
+			x$.off(fn.seed) ;
+			i--;
+		}
 		if(v===false) return v;
 	}
 
