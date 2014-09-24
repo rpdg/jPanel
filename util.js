@@ -315,15 +315,14 @@ x$.on.homepage = '';
 //
 document.onkeydown = function(evt){
 
-	var ls = x$.on.listeners , ss = x$.on.seeds ;
+	var ls = x$.on.listeners , ss = x$.on.seeds.slice() ;
 
 
-	for(var i = 0 ; i < ss.length ; i++){
+	for(var i = 0 ,l= ss.length ; i<l; i++){
 		var fn = ls[ss[i]] ;
 		var v = fn.call(window, evt);
 		if(fn.isOnce) {
 			x$.off(fn.seed) ;
-			i--;
 		}
 		if(v===false) return v;
 	}
