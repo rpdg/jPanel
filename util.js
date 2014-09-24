@@ -276,6 +276,12 @@ x$.getJSON = (function (jPanel) {
 
 x$.off = function(handler){
 	delete x$.on.listeners[handler] ;
+	for(var i = 0 , l = x$.on.seeds.length ; i < l ; i++){
+		if(x$.on.seeds[i]==handler){
+			x$.on.seeds[i].splice(i , 1);
+			break ;
+		}
+	}
 } ;
 x$.on = function (evn , fn , addToHead) {
 	if(addToHead) {
@@ -297,6 +303,8 @@ x$.once = function(evt , cb , addToHead){
 		hdl = null;
 		return cb.call(window, evn) ;
 	} , addToHead) ;
+
+	return hdl ;
 } ;
 x$.on.seeds = [] ;
 x$.on.seedMin = 0;
@@ -310,10 +318,8 @@ document.onkeydown = function(evt){
 
 	for(var i = 0 , l = x$.on.seeds.length ; i < l ; i++){
 		var fn = ls[x$.on.seeds[i]] ;
-		if(fn){
-			var v = fn.call(window, evt);
-			if(v===false) return v;
-		}
+		var v = fn.call(window, evt);
+		if(v===false) return v;
 	}
 
 
