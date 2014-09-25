@@ -298,13 +298,21 @@ x$.on = function (evn , fn , addToHead) {
 		x$.on.seeds.push(seed) ;
 	}
 	x$.on.listeners[seed] = fn;
-	fn.seed = seed ;
+	//fn.seed = seed ;
 	return seed ;
 };
 
 x$.once = function(evt , cb , addToHead){
-	cb.isOnce = true ;
-	return x$.on(evt , cb , addToHead) ;
+	var hdl = x$.on(evt , function(evn){
+		x$.off(hdl) ;
+		hdl = null;
+		return cb.call(window, evn) ;
+	} , addToHead) ;
+
+	return hdl ;
+
+	//cb.isOnce = true ;
+	//return x$.on(evt , cb , addToHead) ;
 } ;
 
 x$.on.seeds = [] ;
@@ -321,9 +329,9 @@ document.onkeydown = function(evt){
 	for(var i = 0 ,l= ss.length ; i<l; i++){
 		var fn = ls[ss[i]] ;
 		var v = fn.call(window, evt);
-		if(fn.isOnce) {
+		/*if(fn.isOnce) {
 			x$.off(fn.seed) ;
-		}
+		}*/
 		if(v===false) return v;
 	}
 
