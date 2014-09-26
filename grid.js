@@ -261,9 +261,14 @@
 			if(this.currentIndex === i) {
 				this.current = null ;
 				this.currentIndex = -1 ;
+
+				if(this.previous){
+					this.jumpTo(this.previous) ;
+					this.previous = null;
+					this.previousIndex = -1 ;
+				}
 			}
 			this.boxes.splice(i,1) ;
-			this.jumpTo(this.previous) ;
 			return this;
 		} ,
 		jumpTo: function (i, j) {

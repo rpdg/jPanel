@@ -2,14 +2,15 @@
 <project name="fyLib" default="compress">
     <target name="concat">
         <concat destfile="../jPanel.js" encoding="UTF-8" outputencoding="UTF-8">
+            <!--<path path="mini.js"/>-->
             <path path="querySelector.js"/>
             <path path="util.js"/>
             <path path="grid.js"/>
         </concat>
     </target>
-	<target name="compress" depends="concat">
-		<exec executable="cmd" failonerror="true">
-			<arg line="/c E:/SDK/nodejs/node_modules/npm/uglifyjs.cmd ../jPanel.js > ../jPanel.min.js" />
-		</exec>
-	</target>
+    <target name="compress" depends="concat">
+        <exec executable="cmd" failonerror="true">
+            <arg line="/c E:/SDK/nodejs/node_modules/npm/uglifyjs.cmd ../jPanel.js > ../jPanel.min.js"/>
+        </exec>
+    </target>
 </project>
