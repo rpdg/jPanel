@@ -336,12 +336,12 @@ document.onkeydown = function(evt){
 	}
 
 
-	//主页
-	if(evt.keyCode == 72 && x$.on.homepage){
+	//Home or Esc
+	if((evt.keyCode == 72 ||evt.keyCode == 27)  && x$.on.homepage){
 		location.href = x$.on.homepage ;
 		return false;
 	}
-	//后退
+	//Backspace
 	if(evt.keyCode == 8){
 		history.back();
 		return false;
