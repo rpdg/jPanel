@@ -6,8 +6,8 @@
 	x$.Grid = (function () {
 		var Grid = function (sets) {
 				return new Grid.fn.init(sets);
-			} ;
-
+			},
+			arrowKeyName = {'left':null,'right':null,'up':null,'down':null} ;
 
 		Grid.fn = Grid.prototype = {
 			init: function (config) {
@@ -133,7 +133,7 @@
 						if (keyName === 'ok') {
 							if(this.click) this.click();
 						}
-						else {
+						else if(keyName in arrowKeyName){
 							//press arrow key
 							var c = this.grid.cols,
 								r = this.grid.rows;
