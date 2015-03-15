@@ -373,6 +373,15 @@
 			}
 			this.bindPage();
 		},
+		gotoPage: function(i){
+			i = parseInt(i,10);
+			if(!isNaN(i)){
+				if(i>this.pageCount-1) i=this.pageCount-1;
+				else if(i<0) i=0;
+				this.pageIndex = i ;
+				this.bindPage();
+			}
+		} ,
 		nextPage: function () {
 			this.pageIndex = this.pageIndex + 1 === this.pageCount ? 0 : this.pageIndex + 1;
 			this.bindPage();
@@ -381,7 +390,7 @@
 			this.pageIndex = this.pageIndex === 0 ? this.pageCount - 1 : this.pageIndex - 1;
 			this.bindPage();
 		},
-		bindPage: function () {
+		bindPage: function() {
 			var dataIndex = this.pageIndex * this.pageSize;
 			x$.bindList(this.container , {
 				template: this.template,
@@ -392,10 +401,15 @@
 			if (this.pageDiv) {
 				this.pageDiv.style.cssText += ';display:block;';
 				if (this.pagination) {
-					this.pageDiv.innerHTML = window.formatJSON(this.pagination, {
-						current: (this.pageIndex + 1),
-						count: this.pageCount
-					});
+					if(typeof this.pagination==='function'){
+						this.pageDiv.innerHTML = this.pagination.call(this , (this.pageIndex + 1), this.pageCount , this.length)
+					}
+					else //string
+						this.pageDiv.innerHTML = x$.formatJSON(this.pagination, {
+							pageIndex: (this.pageIndex + 1),
+							pageCount: this.pageCount ,
+							rows : this.length
+						});
 				} else {
 					this.pageDiv.innerText = (this.pageIndex + 1) + '/' + this.pageCount + ' ' + unescape('%u9875');
 				}
