@@ -293,6 +293,7 @@
 					this.current.focus();
 				}
 			}
+			if (j != undefined) this.current.setIndex(j, 'sync');
 			return this;
 		},
 		jumpBack: function(){
@@ -329,6 +330,7 @@
 		return new PageList.fnc(sets);
 	};
 	PageList.fnc = function (sets) {
+		this.notPaged = true ;
 		this.container = x$(sets.container)[0] ;
 		this.pageDiv = x$(sets.pageDiv)[0] ;
 		this.template = sets.template ;
@@ -398,7 +400,8 @@
 				itemFilter: this.itemFilter,
 				list: this.pageArray(this.data, dataIndex, this.pageSize)
 			});
-			if (this.pageDiv) {
+			if (this.pageDiv && this.notPaged) {
+				delete this.notPaged ;
 				this.pageDiv.style.cssText += ';display:block;';
 				if (this.pagination) {
 					if(typeof this.pagination==='function'){

@@ -13,6 +13,7 @@ x$.EMPTY_FN = function () {
 
 //
 x$.browser = window.navigator.userAgent;
+x$.isDesktop = (x$.browser.indexOf('Windows; U;') === -1);
 x$.version = '0.21';
 
 //
@@ -149,6 +150,22 @@ x$.formatJSON = (function () {
 		});
 	}
 })();
+
+x$.getBoundingClientRect = function(el){
+	if(el.getBoundingClientRect) return el.getBoundingClientRect();
+	var left = 0, top = 0, width = el.offsetWidth , height = el.offsetHeight;
+	do {
+		left += el.offsetLeft;
+		top += el.offsetTop;
+	} while ( (el = el.offsetParent) );
+
+	return {
+		left: Math.round(left),
+		top: Math.round(top) ,
+		width : width ,
+		height : height
+	};
+};
 
 //
 x$.request = (function () {
@@ -343,7 +360,8 @@ document.onkeydown = function(evt){
 	}
 	//Backspace
 	if(evt.keyCode == 8){
-		history.back();
+		if(x$.on.backpage) location.href = x$.on.backpage ;
+		else history.back();
 		return false;
 	}
 

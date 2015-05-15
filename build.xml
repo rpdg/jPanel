@@ -10,7 +10,7 @@
     </target>
     <target name="compress" depends="concat">
         <exec executable="cmd" failonerror="true">
-            <arg line="/c E:/SDK/nodejs/node_modules/npm/uglifyjs.cmd ../jPanel.js > ../jPanel.min.js"/>
+            <arg line="/c node E:\SDK\nodejs\node_modules\uglify-js\bin\uglifyjs ../jPanel.js > ../jPanel.min.js"/>
         </exec>
     </target>
 </project>
