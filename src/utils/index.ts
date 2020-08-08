@@ -1,3 +1,5 @@
-﻿import delay from './delay'
+﻿import delay from './delay';
+import selector from './selector';
 
-export { delay }
+export { delay, selector };
+
