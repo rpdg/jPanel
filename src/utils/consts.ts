@@ -5,6 +5,9 @@
 	'40': 'down',
 	'13': 'ok',
 };
+
+export const EMPTY_FUNC = () => {};
+
 export type KeyMap = {
-	[code:string] : string;
-}
+	[code: string]: string;
+};
