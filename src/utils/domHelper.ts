@@ -16,3 +16,11 @@
 		height: height,
 	};
 };
+
+export const removeClass = function (elem: HTMLElement, className: string) {
+	elem.classList.remove(className);
+};
+
+export const addClass = function (elem: HTMLElement, className: string) {
+	elem.classList.add(className);
+};

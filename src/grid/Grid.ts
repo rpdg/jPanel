@@ -1,4 +1,5 @@
-﻿import { EMPTY_FUNC, KeyMap, KEY_MAPS } from '../utils/consts';
+﻿import { EMPTY_FUNC, KeyMap, KEY_CODE_MAPS, KEY_NAMES } from '../utils/consts';
+import { addClass, removeClass } from '../utils/domHelper';
 import $select from '../utils/selector';
 
 const EDGE_RULES = {
@@ -8,7 +9,9 @@ const EDGE_RULES = {
 
 type Direction = 'up' | 'down' | 'left' | 'right' | 'auto';
 
-const DIRECTIONS = {
+const DIRECTIONS: {
+	[key: string]: Direction;
+} = {
 	UP: 'up',
 	DOWN: 'down',
 	LEFT: 'left',
@@ -47,10 +50,12 @@ type GridOption = {
 	forceRec?: boolean | Coordinate[] | 'strict' | Recagle;
 	frameId?: string;
 	grid?: GridTable;
+	hoverClass?: string;
 	keyMap?: KeyMap;
 	name: string;
 	offset?: Coordinate;
 	onBlur?: GridEventHandler;
+	onChange?: GridEventHandler;
 	onFocus?: GridEventHandler;
 	onHover?: GridEventHandler;
 	onOk?: GridEventHandler;
@@ -65,7 +70,7 @@ const defaultOptions: GridOption = {
 		right: 'stop',
 	},
 	forceRec: false,
-	keyMap: KEY_MAPS,
+	keyMap: KEY_CODE_MAPS,
 	grid: { cols: 1, rows: 1 },
 	onFocus: EMPTY_FUNC,
 	onBlur: EMPTY_FUNC,
@@ -81,32 +86,41 @@ export default class Grid {
 	keyMap: KeyMap;
 	// length = 0;
 	matrix: Coordinate[];
-	name: string;
+	name?: string;
 	offset: Coordinate;
 	onBeforeChange?: GridEventHandler;
 	onBlur?: GridEventHandler;
+	onChange?: GridEventHandler;
 	onFocus?: GridEventHandler;
 	onHover?: GridEventHandler;
 	onNoData?: GridEventHandler;
 	onOk?: GridEventHandler;
 	previousIndex = -1;
 	selectedIndex = 0;
-	timer = 0;
+	selector: string;
+	private hoverTimer = 0;
+	private hoverDelay = 1e3;
+	private hoverClass?: string;
 
-	constructor(select: string, option: GridOption) {
+	constructor(selector: string, option: GridOption) {
 		let sets = Object.assign({}, defaultOptions, option);
+		this.selector = selector;
 		this.name = sets.name;
 		this.edgeRule = sets.edgeRule;
 		this.keyMap = sets.keyMap;
 		this.grid = sets.grid;
 		this.offset = sets.offset;
 		this.onFocus = sets.onFocus;
+		this.onOk = sets.onOk;
 		this.onBlur = sets.onBlur;
+		this.onChange = sets.onChange;
+		this.hoverClass = sets.hoverClass;
+
 		if (sets.frameId) {
 			this.frame = document.getElementById(sets.frameId);
 		}
 
-		this.elems = $select(select);
+		this.elems = $select(selector);
 
 		if (option.forceRec instanceof Array) {
 			this.matrix = option.forceRec;
@@ -118,6 +132,14 @@ export default class Grid {
 		}
 	}
 
+	reset(i: number, direc?: Direction) {
+		this.elems = $select(this.selector);
+		this.previousIndex = this.selectedIndex = -1;
+		if (!isNaN(i) && this.length) {
+			this.setIndex(i, direc || DIRECTIONS.AUTO);
+		}
+	}
+
 	setIndex(t: number, direc?: Direction) {
 		if (this.onBeforeChange) {
 			this.onBeforeChange(direc);
@@ -125,8 +147,9 @@ export default class Grid {
 		if (t < 0 || t + 1 > this.length) {
 			this.onOverRange(direc);
 		} else {
-			if (this.timer) {
-				clearTimeout(this.timer);
+			if (this.hoverTimer) {
+				clearTimeout(this.hoverTimer);
+				this.hoverTimer = 0;
 			}
 			this.previousIndex = this.selectedIndex;
 			this.selectedIndex = t;
@@ -146,13 +169,82 @@ export default class Grid {
 				if ((this.grid.rows > 1 && direc) || direc === 'auto') {
 					frame.style.cssText += ';top:' + mx.y + 'px;';
 				}
-				if ((this.grid.cols > 1 && direc) || direc === 'auto'){
+				if ((this.grid.cols > 1 && direc) || direc === 'auto') {
 					frame.style.cssText += ';left:' + mx.x + 'px;';
 				}
 			}
+			if (this.onChange) this.onChange(direc);
 
-			if (this.onHover && direc){
-				// TODO: to be continued
+			if (this.onHover && direc) {
+				this.hoverTimer = window.setTimeout(() => {
+					this.onHover(direc);
+				}, this.hoverDelay);
+			}
+			//switch hover class
+			if (this.hoverClass && direc != DIRECTIONS.AUTO) {
+				let prevElem = this.previousElement;
+				if (prevElem) {
+					removeClass(prevElem, this.hoverClass);
+				}
+
+				addClass(this.selectedElement, this.hoverClass);
+			}
+		}
+	}
+
+	// TODO: not imp
+	addToBox(asName: string) {
+		// if (asName) {
+		// 	this.name = asName;
+		// }
+		// Box.addGrid(this);
+		// return this;
+	}
+
+	// TODO: not imp
+	jumpToBox(i: number, j: number) {
+		// if (i === -1) {
+		// 	Box.jumpBack();
+		// } else {
+		// 	Box.jumpTo(i, j);
+		// }
+	}
+
+	keyHandler(evt: KeyboardEvent) {
+		if (this.length !== 0) {
+			const keyCode = evt.keyCode || evt.which;
+			const keyName = this.keyMap[keyCode];
+
+			if (keyName && keyName in KEY_NAMES) {
+				if (keyName === KEY_NAMES.ok) {
+					if (this.onOk) {
+						this.onOk();
+					}
+				} else {
+					//press arrow key
+					const cols = this.grid.cols;
+					const rows = this.grid.rows;
+
+					if (
+						(keyName === KEY_NAMES.left && this.selectedIndex % cols === 0) ||
+						(keyName === KEY_NAMES.right && (this.selectedIndex + 1) % cols === 0) ||
+						(keyName === KEY_NAMES.up && this.selectedIndex < cols) ||
+						(keyName === KEY_NAMES.down &&
+							this.selectedIndex + cols + 1 > Math.min(rows * cols, this.length))
+					) {
+						this.onOverRange(keyName as Direction);
+					} else {
+						let n =
+							keyName === KEY_NAMES.left
+								? -1
+								: keyName === KEY_NAMES.right
+								? 1
+								: keyName === KEY_NAMES.up
+								? -cols
+								: cols;
+						this.setIndex(this.selectedIndex + n, keyName as Direction);
+					}
+				}
 			}
 		}
 	}
@@ -223,15 +315,20 @@ export default class Grid {
 			if (this.onNoData) this.onNoData();
 		}
 		// TODO: maybe not supported
-		else if (
-			this.frame &&
-			window.getComputedStyle(this.frame, null).visibility === 'hidden'
-		) {
+		else if (this.frame && window.getComputedStyle(this.frame, null).visibility === 'hidden') {
 			this.frame.style.cssText += ';visibility:visible;';
 		}
 	}
 
 	get length(): number {
 		return this.items.length;
+	}
+
+	get selectedElement(): HTMLElement {
+		return this.items[this.selectedIndex];
+	}
+
+	get previousElement(): HTMLElement {
+		return this.items[this.previousIndex];
 	}
 }
