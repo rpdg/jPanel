@@ -7,7 +7,7 @@ const EDGE_RULES = {
 	LOOP: 'loop',
 };
 
-type Direction = 'up' | 'down' | 'left' | 'right' | 'auto';
+type Direction = 'up' | 'down' | 'left' | 'right' | 'auto' | 'sync';
 
 const DIRECTIONS: {
 	[key: string]: Direction;
@@ -17,6 +17,7 @@ const DIRECTIONS: {
 	LEFT: 'left',
 	RIGHT: 'right',
 	AUTO: 'auto',
+	SYNC: 'sync',
 };
 
 type EdgeStaticRule = 'stop' | 'loop';
@@ -89,9 +90,9 @@ export default class Grid {
 	name?: string;
 	offset: Coordinate;
 	onBeforeChange?: GridEventHandler;
-	onBlur?: GridEventHandler;
+	onBlur: GridEventHandler;
 	onChange?: GridEventHandler;
-	onFocus?: GridEventHandler;
+	onFocus: GridEventHandler;
 	onHover?: GridEventHandler;
 	onNoData?: GridEventHandler;
 	onOk?: GridEventHandler;
