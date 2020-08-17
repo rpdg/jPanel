@@ -8,7 +8,10 @@
 export function query<T>(opts: xhrOptions) {
 	return new Promise<T>(function (resolve, reject) {
 		let xhr = new XMLHttpRequest();
+
 		xhr.open(opts.method, opts.url);
+		xhr.timeout = 3e4; // time in milliseconds
+
 		xhr.onload = function () {
 			if (this.status >= 200 && this.status < 300) {
 				resolve(xhr.response as T);
@@ -18,13 +21,20 @@ export function query<T>(opts: xhrOptions) {
 					statusText: xhr.statusText,
 				});
 			}
-		};
+        };
+        
+		xhr.ontimeout = function (e) {
+			reject({ message: 'I got timed out' });
+        };
+        
 		xhr.onerror = function () {
 			reject({
 				status: this.status,
 				statusText: xhr.statusText,
 			});
 		};
+
+		// Set headers
 		if (opts.headers) {
 			Object.keys(opts.headers).forEach(function (key) {
 				xhr.setRequestHeader(key, opts.headers[key]);
@@ -36,7 +46,7 @@ export function query<T>(opts: xhrOptions) {
 		if (params && typeof params === 'object') {
 			params = Object.keys(params)
 				.map(function (key) {
-					return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+					return `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
 				})
 				.join('&');
 		}
