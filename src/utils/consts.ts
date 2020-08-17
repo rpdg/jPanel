@@ -19,3 +19,22 @@ export const KEY_CODE_MAPS = {
 };
 
 export const EMPTY_FUNC = () => {};
+
+export const Browser = window.navigator.userAgent;
+export const IsDesktop = Browser.indexOf('Windows; U;') === -1;
+export const Version = '0.21';
+
+export const request = (function () {
+	let ret: any = {},
+		a = window.location,
+		seg = a.search.replace(/^\?/, '').split('&'),
+		len = seg.length,
+		i = 0,
+		s;
+	for (; i < len; i++) {
+		if (!seg[i]) continue;
+		s = seg[i].split('=');
+		ret[s[0]] = s[1];
+	}
+	return ret;
+})();

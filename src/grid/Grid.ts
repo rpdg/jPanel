@@ -1,5 +1,5 @@
 ﻿import { EMPTY_FUNC, KeyMap, KEY_CODE_MAPS, KEY_NAMES } from '../utils/consts';
-import { addClass, removeClass } from '../utils/domHelper';
+import { addClass, removeClass } from '../utils/dom';
 import $select from '../utils/selector';
 
 const EDGE_RULES = {

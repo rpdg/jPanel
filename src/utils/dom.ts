@@ -1,4 +1,14 @@
-﻿export const getBoundingClientRect = function (el: HTMLElement) {
+﻿export const byId = function (str: string) {
+	return document.getElementById(str);
+};
+export const byClass = function (clsName: string, context: HTMLElement) {
+	return (context || document).getElementsByClassName(clsName);
+};
+export const byTag = function (clsName: string, context: HTMLElement) {
+	return (context || document).getElementsByTagName(clsName);
+};
+
+export const getBoundingClientRect = function (el: HTMLElement) {
 	if (el.getBoundingClientRect) return el.getBoundingClientRect();
 	let left = 0,
 		top = 0,
@@ -25,11 +35,16 @@ export const addClass = function (elem: HTMLElement, className: string) {
 	elem.classList.add(className);
 };
 
+export const toggleClass = function (elem: HTMLElement, className: string) {
+	return elem.classList.contains(className) ? removeClass(elem, className) : addClass(elem, className);
+};
+
+
+
 let seeds: number[] = [];
 let seedMin = 0;
 let seedMax = -1;
 let listeners: { [key: number]: Function } = {};
-let homepage = '';
 
 export const on = function (evn: string, fn: Function, addToHead: boolean = false) {
 	let seed;

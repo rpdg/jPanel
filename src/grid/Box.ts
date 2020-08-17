@@ -1,4 +1,4 @@
-﻿import * as x$ from '../utils/domHelper';
+﻿import * as x$ from '../utils/dom';
 import Grid from './Grid';
 
 type GridMap = { [key: string]: number };
