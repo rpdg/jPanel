@@ -162,7 +162,9 @@ export const jsonPath = function (src: object, path?: string): any {
 	} else {
 		let arr = path.split('.');
 		let props = `["${arr.join('"]["')}"]`;
-		return eval(`(src${props})`);
+		// return ev al(`(src${props})`);
+		let f = new Function('src', `return src${props}`);
+		return f(src);
 	}
 };
 
