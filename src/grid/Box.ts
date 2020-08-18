@@ -58,7 +58,7 @@ class Box {
 		if (Box.current != tar) {
 			if (tar.length) {
 				if (Box.current) {
-					Box.current.onBlur();
+					Box.current.blur();
 					Box.previous = Box.current;
 					Box.previousIndex = Box.currentIndex;
 				}
@@ -67,7 +67,7 @@ class Box {
 				if (j != undefined) {
 					Box.current.setIndex(j, 'sync');
 				}
-				tar.onFocus();
+				tar.focus();
 			}
 		}
 		if (j) {
@@ -99,11 +99,15 @@ class Box {
 	}
 
 	static reset(blurCurrent?: boolean, i?: number, j?: number) {
-		if (blurCurrent && Box.current) Box.current.onBlur();
+		if (blurCurrent && Box.current) {
+			Box.current.blur();
+		}
 		Box.current = Box.previous = null;
 		Box.currentIndex = Box.previousIndex = -1;
 
-		if (i !== undefined) Box.jumpTo(i, j);
+		if (i !== undefined) {
+			Box.jumpTo(i, j);
+		}
 	}
 }
 

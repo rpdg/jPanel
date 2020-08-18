@@ -39,8 +39,6 @@ export const toggleClass = function (elem: HTMLElement, className: string) {
 	return elem.classList.contains(className) ? removeClass(elem, className) : addClass(elem, className);
 };
 
-
-
 let seeds: number[] = [];
 let seedMin = 0;
 let seedMax = -1;
@@ -86,4 +84,29 @@ export const once = function (evt: string, cb: Function, addToHead?: boolean) {
 	);
 
 	return hdl;
+};
+
+document.onkeydown = function (evt) {
+	let ls = listeners,
+		ss = seeds.slice();
+
+	for (let i = 0, l = ss.length; i < l; i++) {
+		let fn = ls[ss[i]];
+		let v = fn.call(window, evt);
+		if (v === false) {
+			return v;
+		}
+	}
+
+	/* //Home or Esc
+	if ((evt.keyCode == 72 || evt.keyCode == 27) && x$.on.homepage) {
+		location.href = on.homepage;
+		return false;
+	}
+	//Backspace
+	if (evt.keyCode == 8) {
+		if (on.backpage) location.href = on.backpage;
+		else history.back();
+		return false;
+	} */
 };

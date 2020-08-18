@@ -2,15 +2,17 @@
 
 import path from 'path';
 import serve from 'rollup-plugin-serve';
+import livereload from 'rollup-plugin-livereload';
 import configList from './rollup.config';
 
 const resolveFile = function (filePath) {
 	return path.join(__dirname, '..', filePath);
 };
+
 const PORT = 3000;
 
 const devSite = `http://127.0.0.1:${PORT}`;
-const devPath = path.join('example', 'index.html');
+const devPath = path.join('public', 'index.html');
 const devUrl = `${devSite}/${devPath}`;
 
 setTimeout(() => {
@@ -26,7 +28,17 @@ configList.map((config, index) => {
 			...[
 				serve({
 					port: PORT,
-					contentBase: [resolveFile('')],
+					contentBase: ['.', 'dist'],
+					open: true,
+					openPage: `/public/index.html`,
+				}),
+				livereload({
+					watch: [
+						path.resolve(__dirname, 'public'),
+						path.resolve(__dirname, 'dist'),
+						path.resolve(__dirname, 'src'),
+					],
+					exts: ['html', 'js', 'ts', 'scss', 'css'],
 				}),
 			],
 		];

@@ -1,0 +1,150 @@
+﻿<html>
+
+<head>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            border: 0;
+            outline: 0;
+            overflow: hidden;
+            background-color: transparent;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-size: 24px;
+            font-family: simhei;
+        }
+
+        body {
+            background-color: black;
+            background-repeat: no-repeat;
+            width: 1280px;
+            height: 720px;
+        }
+
+        a,
+        div,
+        ul {
+            display: block;
+            position: absolute;
+        }
+
+        ul,
+        li {
+            list-style: none;
+        }
+
+        .frame {
+            position: absolute;
+            z-index: 999;
+            display: none;
+            -webkit-transition-property: top, left;
+            -webkit-transition-duration: 200ms;
+            -webkit-transition-timing-function: ease-out;
+        }
+
+        #menubar {
+            top: 110px;
+            left: 50px;
+            width: 1180px;
+            height: 51px;
+            background-image: url("assets/bg_navi.png");
+            padding-left: 35px;
+            padding-top: 6px;
+        }
+
+        #menuWrap {
+            width: 1110px;
+            height: 45px;
+            overflow: hidden;
+        }
+
+        #menu {
+            display: -webkit-box;
+            /*margin: 6px 35px;*/
+            -webkit-box-orient: horizontal;
+            overflow: hidden;
+            white-space: nowrap;
+            -webkit-transition-property: margin-left;
+            -webkit-transition-duration: 60ms;
+            -webkit-transition-timing-function: ease-in;
+        }
+
+        #menu>li {
+            display: inline-block;
+            width: 185px;
+            height: 45px;
+            line-height: 45px;
+            font-size: 32px;
+            text-align: center;
+        }
+
+        .hover {
+            background-color: #FFA500 !important;
+            background-image: none !important;
+            color: #060606 !important;
+        }
+
+        .navBtn {
+            top: 0;
+            left: 1150px;
+            width: 99px;
+            height: 109px;
+        }
+
+        #btnBack.navBtn {
+            background-image: url("assets/btnBack.png");
+        }
+
+        #btnExit.nav3 {
+            left: 1150px;
+        }
+
+        #btnExit.navBtn {
+            background-image: url("assets/btnMainpage.png");
+        }
+
+        #btnExit.nav2 {
+            left: 1150px;
+        }
+
+
+        #btnHome.navBtn {
+            background-image: url("assets/btnHomepage.png");
+        }
+
+        #btnHome.nav2 {
+            left: 1090px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="btnHome" class="navBtn nav2"></div>
+    <div id="btnExit" class="navBtn nav2"></div>
+    <img id="frame0" class="frame" src="assets/frame_btn.png" />
+
+    <div id="menubar">
+        <div id="menuWrap">
+            <ul id="menu">
+                <li class="show" data-cid="abc001" data-url="../ttyy/ttyy.html">天天影院</li>
+                <li class="show" data-cid="csee313" data-url="../ttjc/ttjc.html">天天剧场</li>
+                <li class="show" data-cid="fe23221" data-url="baoYue.html">动漫幼教</li>
+                <li class="show" data-cid="nejt32" data-url="../shbk/shbk.html">生活百科</li>
+                <li class="show" data-cid="fw231244">综艺体育</li>
+                <li class="show" data-cid="ntw3128" data-url="../wsp/wsp.html">微视频</li>
+                <li data-cid="msk85">附加nn</li>
+                <li data-cid="xmce732">附加xx</li>
+                <li data-cid="butev77">附加xx2</li>
+            </ul>
+        </div>
+    </div>
+    <!--菜单:end-->
+    <script src="./../dist/index.js"></script>
+    <script>
+        jbox(5)
+    </script>
+</body>
+
+</html>

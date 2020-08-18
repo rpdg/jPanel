@@ -1,6 +1,8 @@
 ﻿import { EMPTY_FUNC, KeyMap, KEY_CODE_MAPS, KEY_NAMES } from '../utils/consts';
 import { addClass, removeClass } from '../utils/dom';
+import { deepExtend } from '../utils/helper';
 import $select from '../utils/selector';
+import Box from './Box';
 
 const EDGE_RULES = {
 	STOP: 'stop',
@@ -60,6 +62,7 @@ type GridOption = {
 	onFocus?: GridEventHandler;
 	onHover?: GridEventHandler;
 	onOk?: GridEventHandler;
+	selectedIndex?:number
 };
 
 const defaultOptions: GridOption = {
@@ -73,8 +76,13 @@ const defaultOptions: GridOption = {
 	forceRec: false,
 	keyMap: KEY_CODE_MAPS,
 	grid: { cols: 1, rows: 1 },
+	offset: {
+		x: 0,
+		y: 0,
+	},
 	onFocus: EMPTY_FUNC,
 	onBlur: EMPTY_FUNC,
+	selectedIndex: 0,
 };
 
 export default class Grid {
@@ -85,7 +93,6 @@ export default class Grid {
 	grid: GridTable;
 	items: HTMLElement[];
 	keyMap: KeyMap;
-	// length = 0;
 	matrix: Coordinate[];
 	name?: string;
 	offset: Coordinate;
@@ -104,7 +111,7 @@ export default class Grid {
 	private hoverClass?: string;
 
 	constructor(selector: string, option: GridOption) {
-		let sets = Object.assign({}, defaultOptions, option);
+		let sets = deepExtend<GridOption>({}, defaultOptions, option);
 		this.selector = selector;
 		this.name = sets.name;
 		this.edgeRule = sets.edgeRule;
@@ -131,6 +138,36 @@ export default class Grid {
 			this.forceRec = option.forceRec || false;
 			this.initMatrix();
 		}
+
+		if (this.length) {
+			this.setIndex(sets.selectedIndex, DIRECTIONS.AUTO);
+		}
+	}
+
+	focus() {
+		if (this.frame) {
+			this.frame.style.cssText += ';display:block;';
+		}
+		if (this.hoverClass) {
+			addClass(this.selectedElement, this.hoverClass);
+		}
+
+		if (this.onFocus != EMPTY_FUNC) {
+			this.onFocus.call(this);
+		}
+	}
+
+	blur() {
+		if (this.frame) {
+			this.frame.style.cssText += ';display:none;';
+		}
+		if (this.hoverClass) {
+			removeClass(this.selectedElement, this.hoverClass);
+		}
+
+		if (this.onBlur != EMPTY_FUNC) {
+			this.onBlur.call(this);
+		}
 	}
 
 	reset(i: number, direc?: Direction) {
@@ -154,6 +191,7 @@ export default class Grid {
 			}
 			this.previousIndex = this.selectedIndex;
 			this.selectedIndex = t;
+
 			let frame = this.frame;
 			let mx: Coordinate;
 			if (frame) {
@@ -193,22 +231,20 @@ export default class Grid {
 		}
 	}
 
-	// TODO: not imp
-	addToBox(asName: string) {
-		// if (asName) {
-		// 	this.name = asName;
-		// }
-		// Box.addGrid(this);
-		// return this;
+	addIntoBox(asName: string) {
+		if (asName) {
+			this.name = asName;
+		}
+		Box.addGrid(this);
+		return this;
 	}
 
-	// TODO: not imp
-	jumpToBox(i: number, j: number) {
-		// if (i === -1) {
-		// 	Box.jumpBack();
-		// } else {
-		// 	Box.jumpTo(i, j);
-		// }
+	jumpToBox(i: number | string | Grid, j?: number) {
+		if (i === -1) {
+			Box.jumpBack();
+		} else {
+			Box.jumpTo(i, j);
+		}
 	}
 
 	keyHandler(evt: KeyboardEvent) {
@@ -251,23 +287,23 @@ export default class Grid {
 	}
 
 	private onOverRange(w: Direction) {
-		if (this.edgeRule[w] === 'stop') {
+		if (this.edgeRule[w] === EDGE_RULES.STOP) {
 			return;
 		}
 
 		switch (w) {
-			case 'up':
-			case 'left':
-				if (this.edgeRule[w] === 'loop') {
+			case DIRECTIONS.UP:
+			case DIRECTIONS.LEFT:
+				if (this.edgeRule[w] === EDGE_RULES.LOOP) {
 					let i = this.selectedIndex - 1;
 					this.setIndex(i < 0 ? this.length - 1 : i, w);
 				} else {
 					(this.edgeRule[w] as EdgeHandler)(w);
 				}
 				break;
-			case 'down':
-			case 'right':
-				if (this.edgeRule[w] === 'loop') {
+			case DIRECTIONS.DOWN:
+			case DIRECTIONS.RIGHT:
+				if (this.edgeRule[w] === EDGE_RULES.LOOP) {
 					var i = this.selectedIndex + 1;
 					this.setIndex(i > this.length - 1 ? 0 : i, w);
 				} else {
@@ -278,6 +314,7 @@ export default class Grid {
 			// do nothing.
 		}
 	}
+
 	private initMatrix() {
 		let rec: Recagle;
 		let fc = this.forceRec;
@@ -315,7 +352,7 @@ export default class Grid {
 			if (this.frame) this.frame.style.cssText += ';visibility:hidden;';
 			if (this.onNoData) this.onNoData();
 		}
-		// TODO: maybe not supported
+		// TODO: need check before use, maybe not supported
 		else if (this.frame && window.getComputedStyle(this.frame, null).visibility === 'hidden') {
 			this.frame.style.cssText += ';visibility:visible;';
 		}
