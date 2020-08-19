@@ -1,7 +1,7 @@
 ﻿import bindList, { ItemFilter, ItemRender } from '../utils/bindList';
 import { formatJSON } from '../utils/helper';
 
-type PageListConfig = {
+export type PageListConfig = {
 	data?: any[];
 	container: HTMLElement;
 	pageDiv: HTMLElement;

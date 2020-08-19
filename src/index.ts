@@ -1,21 +1,32 @@
 ﻿import Box from './grid/Box';
-import Grid from './grid/Grid';
-import PageList from './grid/PageList';
+import Grid, { GridOption } from './grid/Grid';
+import PageList, { PageListConfig } from './grid/PageList';
 import bindList from './utils/bindList';
 import * as Consts from './utils/consts';
 import * as dom from './utils/dom';
 import * as utils from './utils/helper';
 import getJSON from './utils/http';
 
-const x$ = {
+const X$ = {
 	bindList,
 	getJSON,
 	dom,
 	utils,
-	Grid,
-	Box,
-	PageList,
 	Consts,
+	grid: function (selector: string, option: GridOption) {
+		return new Grid(selector, option);
+	},
+	box: Box,
+	pageList: function (cfg: PageListConfig) {
+		return new PageList(cfg);
+	},
 };
 
-export default x$;
+declare global {
+	interface Window {
+		x$: typeof X$;
+	}
+	const x$: typeof X$;
+}
+
+export default X$;

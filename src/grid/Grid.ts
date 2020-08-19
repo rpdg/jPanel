@@ -1,6 +1,6 @@
 ﻿import { EMPTY_FUNC, KeyMap, KEY_CODE_MAPS, KEY_NAMES } from '../utils/consts';
-import { addClass, removeClass, select as x$select } from '../utils/dom';
-import { deepExtend } from '../utils/helper';
+import { addClass, byId, removeClass, select as x$select } from '../utils/dom';
+import { componentUid, deepExtend } from '../utils/helper';
 import Box from './Box';
 
 const EDGE_RULES = {
@@ -37,7 +37,7 @@ type GridTable = {
 	rows?: number;
 };
 
-type Coordinate = {
+type Point = {
 	x?: number;
 	y?: number;
 };
@@ -45,23 +45,23 @@ type Coordinate = {
 type Recagle = {
 	w?: number;
 	h?: number;
-} & Coordinate;
+} & Point;
 
-type GridOption = {
+export type GridOption = {
 	edgeRule?: EdgeRule;
-	forceRec?: boolean | Coordinate[] | 'strict' | Recagle;
+	forceRec?: boolean | Point[] | 'strict' | Recagle;
 	frameId?: string;
 	grid?: GridTable;
 	hoverClass?: string;
 	keyMap?: KeyMap;
 	name: string;
-	offset?: Coordinate;
+	offset?: Point;
 	onBlur?: GridEventHandler;
 	onChange?: GridEventHandler;
 	onFocus?: GridEventHandler;
 	onHover?: GridEventHandler;
 	onOk?: GridEventHandler;
-	selectedIndex?:number
+	selectedIndex?: number;
 };
 
 const defaultOptions: GridOption = {
@@ -92,9 +92,9 @@ export default class Grid {
 	grid: GridTable;
 	items: HTMLElement[];
 	keyMap: KeyMap;
-	matrix: Coordinate[];
+	matrix: Point[];
 	name?: string;
-	offset: Coordinate;
+	offset: Point;
 	onBeforeChange?: GridEventHandler;
 	onBlur: GridEventHandler;
 	onChange?: GridEventHandler;
@@ -110,9 +110,11 @@ export default class Grid {
 	private hoverClass?: string;
 
 	constructor(selector: string, option: GridOption) {
-		let sets = deepExtend<GridOption>({}, defaultOptions, option);
 		this.selector = selector;
-		this.name = sets.name;
+
+		let sets = deepExtend<GridOption>({}, defaultOptions, option);
+
+		this.name = option.name ?? `grid-${componentUid()}`;
 		this.edgeRule = sets.edgeRule;
 		this.keyMap = sets.keyMap;
 		this.grid = sets.grid;
@@ -124,7 +126,7 @@ export default class Grid {
 		this.hoverClass = sets.hoverClass;
 
 		if (sets.frameId) {
-			this.frame = document.getElementById(sets.frameId);
+			this.frame = byId(sets.frameId);
 		}
 
 		this.elems = x$select(selector);
@@ -192,7 +194,7 @@ export default class Grid {
 			this.selectedIndex = t;
 
 			let frame = this.frame;
-			let mx: Coordinate;
+			let mx: Point;
 			if (frame) {
 				if (!this.matrix[t] || this.forceRec === true) {
 					// TODO: maybe not supported

@@ -1,7 +1,9 @@
-﻿let overCount = 0;
+﻿/// <reference path="../dist/index.d.ts" />
+
+let overCount = 0;
 let menuBar = x$.dom.byId('menu');
 let fullIemList = x$.dom.select('#menu>li');
-let menu = new x$.Grid('#menu>.show', {
+let menu = x$.grid('#menu>.show', {
 	name: 'menu',
 	grid: { cols: 6 },
 	forceRec: 'strict',
@@ -82,7 +84,7 @@ let menu = new x$.Grid('#menu>.show', {
 });
 
 //top btn
-let topBtns = new x$.Grid('.navBtn', {
+let topBtns = x$.grid('.navBtn', {
 	name: 'topBtns',
 	frameId: 'frame0',
 	grid: { cols: 2 },
@@ -110,5 +112,4 @@ let topBtns = new x$.Grid('.navBtn', {
 	},
 });
 
-x$.Box.addGrid(menu, topBtns);
-x$.Box.active();
+x$.box.addGrid(menu, topBtns).active();

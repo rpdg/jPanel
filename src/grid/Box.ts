@@ -22,6 +22,8 @@ class Box {
 			grid.boxIndex = Box.boxes.length;
 			Box.boxes.push(grid);
 		}
+
+		return Box;
 	}
 	static removeGrid(i: number) {
 		if (Box.currentIndex === i) {
@@ -92,6 +94,8 @@ class Box {
 		}
 		Box.eventName = evtName || Box.eventName;
 		x$.on(Box.eventName, Box.keyHolder);
+
+		return Box;
 	}
 
 	static inactive() {

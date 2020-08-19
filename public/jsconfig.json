@@ -1,0 +1,12 @@
+﻿{
+    "compilerOptions": {
+        "checkJs": true,
+        "alwaysStrict": true,
+        "target": "ES6",
+        "module": "none",
+    },
+    "include": ["./**/*"],
+    "typeAcquisition": {
+        "include": ["./dist/index.d.ts"]
+    }
+}

@@ -105,6 +105,13 @@ export function deepExtend<T>(extendTarget: any, ...args: any[]): T {
 	return target;
 }
 
+// 3 times faster than JSON.parse(JSON.stringify(obj))
+export function cloneObject(taget: any, src: any) {
+	for (let i in src) {
+		taget[i] = src[i] && typeof src[i] === 'object' ? cloneObject(src[i].constructor(), src[i]) : src[i];
+	}
+	return taget;
+}
 
 export const formatJSON = (function () {
 	let pattern = /\{(\w*[:]*[=]*\w+)\}(?!})/g;
