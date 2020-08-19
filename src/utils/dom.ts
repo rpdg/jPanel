@@ -1,4 +1,11 @@
-﻿export const byId = function (str: string) {
+﻿export function select (selector: string, context?: HTMLElement): HTMLElement[] {
+	return Array.prototype.slice.call(
+		(context || document).querySelectorAll(selector)
+	);
+}
+
+
+export const byId = function (str: string) {
 	return document.getElementById(str);
 };
 export const byClass = function (clsName: string, context: HTMLElement) {

@@ -1,7 +1,6 @@
 ﻿import { EMPTY_FUNC, KeyMap, KEY_CODE_MAPS, KEY_NAMES } from '../utils/consts';
-import { addClass, removeClass } from '../utils/dom';
+import { addClass, removeClass, select as x$select } from '../utils/dom';
 import { deepExtend } from '../utils/helper';
-import $select from '../utils/selector';
 import Box from './Box';
 
 const EDGE_RULES = {
@@ -128,7 +127,7 @@ export default class Grid {
 			this.frame = document.getElementById(sets.frameId);
 		}
 
-		this.elems = $select(selector);
+		this.elems = x$select(selector);
 
 		if (option.forceRec instanceof Array) {
 			this.matrix = option.forceRec;
@@ -171,7 +170,7 @@ export default class Grid {
 	}
 
 	reset(i: number, direc?: Direction) {
-		this.elems = $select(this.selector);
+		this.elems = x$select(this.selector);
 		this.previousIndex = this.selectedIndex = -1;
 		if (!isNaN(i) && this.length) {
 			this.setIndex(i, direc || DIRECTIONS.AUTO);

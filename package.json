@@ -1,11 +1,20 @@
 {
-	"name": "jpanel2",
-	"version": "1.0.0",
+	"name": "epg-js-lib",
+	"version": "2.0.0",
 	"description": "STB js lib",
+	"bugs": "https://github.com/rpdg/jPanel/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rpdg/jPanel.git"
+	},
+	"private": false,
 	"main": "dist/index.js",
+	"module": "dist/index.esm.js",
+	"browser": "dist/index.bundle.js",
 	"types": "dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist",
+		"README.md"
 	],
 	"scripts": {
 		"build": "node_modules/.bin/rollup -c ./build/rollup.config.prod.js",

@@ -5,7 +5,7 @@
 	headers?: any;
 };
 
-export function getJSON<T>(opts: xhrOptions) {
+export default function getJSON<T>(opts: xhrOptions) {
 	return new Promise<T>(function (resolve, reject) {
 		let xhr = new XMLHttpRequest();
 
