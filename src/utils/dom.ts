@@ -1,9 +1,6 @@
-﻿export function select (selector: string, context?: HTMLElement): HTMLElement[] {
-	return Array.prototype.slice.call(
-		(context || document).querySelectorAll(selector)
-	);
+﻿export function select(selector: string, context?: HTMLElement): HTMLElement[] {
+	return Array.prototype.slice.call((context || document).querySelectorAll(selector));
 }
-
 
 export const byId = function (str: string) {
 	return document.getElementById(str);

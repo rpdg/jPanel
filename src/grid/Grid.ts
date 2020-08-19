@@ -153,7 +153,7 @@ export default class Grid {
 			addClass(this.selectedElement, this.hoverClass);
 		}
 
-		if (this.onFocus != EMPTY_FUNC) {
+		if (this.onFocus !== EMPTY_FUNC) {
 			this.onFocus.call(this);
 		}
 	}
@@ -166,7 +166,7 @@ export default class Grid {
 			removeClass(this.selectedElement, this.hoverClass);
 		}
 
-		if (this.onBlur != EMPTY_FUNC) {
+		if (this.onBlur !== EMPTY_FUNC) {
 			this.onBlur.call(this);
 		}
 	}
