@@ -105,12 +105,16 @@ export function deepExtend<T>(extendTarget: any, ...args: any[]): T {
 	return target;
 }
 
-// 3 times faster than JSON.parse(JSON.stringify(obj))
-export function fastClone(taget: any, src: any) {
+/**
+ * 3 times faster than JSON.parse(JSON.stringify(obj))
+ * @param target Target Object (or Array)
+ * @param src Source Object (or Array)
+ */
+export function fastClone(target: any, src: any) {
 	for (let i in src) {
-		taget[i] = src[i] && typeof src[i] === 'object' ? fastClone(src[i].constructor(), src[i]) : src[i];
+		target[i] = src[i] && typeof src[i] === 'object' ? fastClone(src[i].constructor(), src[i]) : src[i];
 	}
-	return taget;
+	return target;
 }
 
 export const formatJSON = (function () {

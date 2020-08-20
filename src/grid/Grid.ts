@@ -54,7 +54,7 @@ export type GridOption = {
 	grid?: GridTable;
 	hoverClass?: string;
 	keyMap?: KeyMap;
-	name: string;
+	name?: string;
 	offset?: Point;
 	onBlur?: GridEventHandler;
 	onChange?: GridEventHandler;
@@ -65,7 +65,6 @@ export type GridOption = {
 };
 
 const defaultOptions: GridOption = {
-	name: '',
 	edgeRule: {
 		up: 'stop',
 		down: 'stop',
@@ -257,7 +256,7 @@ export default class Grid {
 			if (keyName && keyName in KEY_NAMES) {
 				if (keyName === KEY_NAMES.ok) {
 					if (this.onOk) {
-						this.onOk();
+						this.onOk.call(this);
 					}
 				} else {
 					//press arrow key
@@ -300,7 +299,7 @@ export default class Grid {
 					let i = this.selectedIndex - 1;
 					this.setIndex(i < 0 ? this.length - 1 : i, w);
 				} else {
-					(this.edgeRule[w] as EdgeHandler)(w);
+					(this.edgeRule[w] as EdgeHandler).call(this, w);
 				}
 				break;
 			case DIRECTIONS.DOWN:
@@ -309,7 +308,7 @@ export default class Grid {
 					var i = this.selectedIndex + 1;
 					this.setIndex(i > this.length - 1 ? 0 : i, w);
 				} else {
-					(this.edgeRule[w] as EdgeHandler)(w);
+					(this.edgeRule[w] as EdgeHandler).call(this, w);
 				}
 				break;
 			default:

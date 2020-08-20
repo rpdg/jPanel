@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 // tsc -t es5 -w demo.ts
+x$.log.active(true);
 (function b() {
     return __awaiter(this, void 0, void 0, function () {
         var m;
@@ -125,9 +126,14 @@ var menu = x$.grid('#menu>.show', {
             if (menu.selectedIndex > 4) {
                 menu.jumpToBox(topBtns);
             }
-            // else this.jumpToBox(topNumber);
+            else {
+                this.jumpToBox(topNumber);
+            }
         },
     },
+    onOk: function () {
+        console.log(menu.selectedIndex, menu.selectedElement);
+    }
 });
 //top btn
 var topBtns = x$.grid('.navBtn', {
@@ -135,9 +141,9 @@ var topBtns = x$.grid('.navBtn', {
     frameId: 'frame0',
     grid: { cols: 2 },
     edgeRule: {
-        // left: function () {
-        // 	topBtns.jumpToBox(topNumber);
-        // },
+        left: function () {
+            topBtns.jumpToBox(topNumber);
+        },
         down: function () {
             topBtns.jumpToBox(menu);
         },
@@ -157,4 +163,20 @@ var topBtns = x$.grid('.navBtn', {
         // }
     },
 });
-x$.box.addGrid(menu, topBtns).active();
+//top numbers
+var topNumber = x$.grid('#tips span', {
+    hoverClass: 'hover',
+    grid: { cols: 3 },
+    edgeRule: {
+        right: function () {
+            this.jumpToBox(topBtns);
+        },
+        down: function () {
+            this.jumpToBox(menu);
+        },
+    },
+    onOk: function () {
+        window.location.hash = this.boxIndex + ',' + this.selectedIndex;
+    },
+});
+x$.box.addGrid(menu, topBtns, topNumber).active();

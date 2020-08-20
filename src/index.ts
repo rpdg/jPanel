@@ -6,6 +6,7 @@ import * as Consts from './utils/consts';
 import * as dom from './utils/dom';
 import * as utils from './utils/helper';
 import getJSON from './utils/http';
+import log from './utils/log';
 
 const X$ = {
 	bindList,
@@ -13,6 +14,7 @@ const X$ = {
 	dom,
 	utils,
 	Consts,
+	log,
 	grid: function (selector: string, option: GridOption) {
 		return new Grid(selector, option);
 	},

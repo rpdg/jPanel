@@ -12,7 +12,7 @@ const resolveFile = function (filePath) {
 const PORT = 3000;
 
 const devSite = `http://127.0.0.1:${PORT}`;
-const devPath = path.join('public', 'index.html');
+const devPath = path.join('demo', 'index.html');
 const devUrl = `${devSite}/${devPath}`;
 
 setTimeout(() => {
@@ -30,11 +30,11 @@ configList.map((config, index) => {
 					port: PORT,
 					contentBase: ['.', 'dist'],
 					open: true,
-					openPage: `/public/index.html`,
+					openPage: `/demo/index.html`,
 				}),
 				livereload({
 					watch: [
-						path.resolve(__dirname, 'public'),
+						path.resolve(__dirname, 'demo'),
 						path.resolve(__dirname, 'dist'),
 						path.resolve(__dirname, 'src'),
 					],

@@ -2,6 +2,7 @@
 
 // tsc -t es5 -w demo.ts
 
+x$.log.active(true);
 
 (async function b() {
 	let m = await x$.getJSON({
@@ -14,6 +15,9 @@
 	});
 	console.log(m);
 })();
+
+
+
 let overCount = 0;
 let menuBar = x$.dom.byId('menu');
 let fullIemList = x$.dom.select('#menu>li');
@@ -91,10 +95,14 @@ let menu = x$.grid('#menu>.show', {
 		up: function () {
 			if (menu.selectedIndex > 4) {
 				menu.jumpToBox(topBtns);
+			} else {
+				this.jumpToBox(topNumber);
 			}
-			// else this.jumpToBox(topNumber);
 		},
 	},
+	onOk: function(){
+		console.log(menu.selectedIndex , menu.selectedElement)
+	}
 });
 
 //top btn
@@ -103,9 +111,9 @@ let topBtns = x$.grid('.navBtn', {
 	frameId: 'frame0',
 	grid: { cols: 2 },
 	edgeRule: {
-		// left: function () {
-		// 	topBtns.jumpToBox(topNumber);
-		// },
+		left: function () {
+			topBtns.jumpToBox(topNumber);
+		},
 		down: function () {
 			topBtns.jumpToBox(menu);
 		},
@@ -126,4 +134,21 @@ let topBtns = x$.grid('.navBtn', {
 	},
 });
 
-x$.box.addGrid(menu, topBtns).active();
+//top numbers
+let topNumber = x$.grid('#tips span', {
+	hoverClass: 'hover',
+	grid: { cols: 3 },
+	edgeRule: {
+		right: function () {
+			this.jumpToBox(topBtns);
+		},
+		down: function () {
+			this.jumpToBox(menu);
+		},
+	},
+	onOk: function () {
+		window.location.hash = this.boxIndex + ',' + this.selectedIndex;
+	},
+});
+
+x$.box.addGrid(menu, topBtns , topNumber).active();

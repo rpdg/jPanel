@@ -48,27 +48,27 @@ let seedMin = 0;
 let seedMax = -1;
 let listeners: { [key: number]: Function } = {};
 
-export const on = function (evn: string, fn: Function, addToHead: boolean = false) {
-	let seed;
+export const on = function (evn: string, fn: Function, addToHead: boolean = false): number {
+	let handlerSeed: number;
 	if (addToHead) {
-		seed = --seedMin;
-		seeds.unshift(seed);
+		handlerSeed = --seedMin;
+		seeds.unshift(handlerSeed);
 	} else {
-		seed = ++seedMax;
-		seeds.push(seed);
+		handlerSeed = ++seedMax;
+		seeds.push(handlerSeed);
 	}
-	listeners[seed] = fn;
+	listeners[handlerSeed] = fn;
 	//fn.seed = seed ;
-	return seed;
+	return handlerSeed;
 };
 
-export const off = function (seed: number) {
+export const off = function (handlerSeed: number) {
 	let b = false;
 	let ss = seeds;
 	for (let i = 0, l = ss.length; i < l; i++) {
-		if (ss[i] == seed) {
+		if (ss[i] == handlerSeed) {
 			ss.splice(i, 1);
-			delete listeners[seed];
+			delete listeners[handlerSeed];
 			b = true;
 			break;
 		}
@@ -77,17 +77,17 @@ export const off = function (seed: number) {
 };
 
 export const once = function (evt: string, cb: Function, addToHead?: boolean) {
-	let hdl = on(
+	let hdlSeed = on(
 		evt,
-		function (evn: string) {
-			off(hdl);
-			hdl = null;
-			return cb.call(window, evn);
+		function (event: Event) {
+			off(hdlSeed);
+			hdlSeed = null;
+			return cb.call(window, event);
 		},
 		addToHead
 	);
 
-	return hdl;
+	return hdlSeed;
 };
 
 document.onkeydown = function (evt) {
