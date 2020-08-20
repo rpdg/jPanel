@@ -93,7 +93,7 @@ export default class Grid {
 	items: HTMLElement[];
 	keyMap: KeyMap;
 	matrix: Point[];
-	name?: string;
+	name: string;
 	offset: Point;
 	onBeforeChange?: GridEventHandler;
 	onBlur: GridEventHandler;
@@ -115,6 +115,7 @@ export default class Grid {
 		let sets = deepExtend<GridOption>({}, defaultOptions, option);
 
 		this.name = option.name ?? `grid-${componentUid()}`;
+
 		this.edgeRule = sets.edgeRule;
 		this.keyMap = sets.keyMap;
 		this.grid = sets.grid;
@@ -136,7 +137,7 @@ export default class Grid {
 			this.forceRec = false;
 		} else {
 			this.matrix = [];
-			this.forceRec = option.forceRec || false;
+			this.forceRec = option.forceRec ?? false;
 			this.initMatrix();
 		}
 
@@ -147,7 +148,7 @@ export default class Grid {
 
 	focus() {
 		if (this.frame) {
-			this.frame.style.cssText += ';display:block;';
+			this.frame.style.display = 'block';
 		}
 		if (this.hoverClass) {
 			addClass(this.selectedElement, this.hoverClass);
@@ -160,7 +161,7 @@ export default class Grid {
 
 	blur() {
 		if (this.frame) {
-			this.frame.style.cssText += ';display:none;';
+			this.frame.style.display = 'none';
 		}
 		if (this.hoverClass) {
 			removeClass(this.selectedElement, this.hoverClass);
@@ -349,13 +350,17 @@ export default class Grid {
 	set elems(list: HTMLElement[]) {
 		this.items = list;
 		// this.length = list.length;
-		if (this.length === 0) {
-			if (this.frame) this.frame.style.cssText += ';visibility:hidden;';
-			if (this.onNoData) this.onNoData();
+		if (list.length === 0) {
+			if (this.frame) {
+				this.frame.style.visibility = 'hidden';
+			}
+			if (this.onNoData) {
+				this.onNoData();
+			}
 		}
 		// TODO: need check before use, maybe not supported
 		else if (this.frame && window.getComputedStyle(this.frame, null).visibility === 'hidden') {
-			this.frame.style.cssText += ';visibility:visible;';
+			this.frame.style.visibility = 'visible';
 		}
 	}
 

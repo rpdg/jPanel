@@ -30,3 +30,4 @@ declare global {
 }
 
 export default X$;
+

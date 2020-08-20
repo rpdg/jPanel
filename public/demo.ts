@@ -5,8 +5,8 @@
 
 (async function b() {
 	let m = await x$.getJSON({
-		url: 'https://jsonplaceholder.typicode.com/posts',
-		method: 'POST',
+		url: 'https://jsonplaceholder.typicode.com/posts/1',
+		method: 'GET',
 		params: {
 			beginTime: '2020-08-06 00:00:00',
 			endTime: '2020-08-06 23:59:59',

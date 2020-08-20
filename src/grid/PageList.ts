@@ -16,7 +16,7 @@ export type PageListConfig = {
 	onBound?: () => void;
 };
 
-type Pagination = (pageNumber: number, pageCount: number, length: number) => void | string;
+type Pagination = (pageNumber: number, pageCount: number, length: number) => string | string;
 
 function pageArray<T>(arr: T[], startIndex: number, pageSize: number): T[] {
 	let len = arr.length;

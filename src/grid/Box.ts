@@ -16,9 +16,7 @@ class Box {
 	static addGrid(...grids: Grid[]) {
 		for (let i = 0, l = grids.length; i < l; i++) {
 			let grid = grids[i];
-			if (grid.name) {
-				Box.gridMap[grid.name] = Box.boxes.length;
-			}
+			Box.gridMap[grid.name] = Box.boxes.length;
 			grid.boxIndex = Box.boxes.length;
 			Box.boxes.push(grid);
 		}
@@ -37,7 +35,7 @@ class Box {
 			}
 		}
 		Box.boxes.splice(i, 1);
-		return this;
+		return Box;
 	}
 
 	static getGrid(i: number | string): Grid {
