@@ -1,4 +1,4 @@
-﻿import { EMPTY_FUNC, KeyMap, KEY_CODE_MAPS, KEY_NAMES } from '../utils/consts';
+﻿import { KeyMap, KEY_CODE_MAPS, KEY_NAMES } from '../utils/consts';
 import { addClass, byId, removeClass, select as x$select } from '../utils/dom';
 import { componentUid, deepExtend } from '../utils/helper';
 import Box from './Box';
@@ -22,7 +22,9 @@ const DIRECTIONS: {
 };
 
 type EdgeStaticRule = 'stop' | 'loop';
+
 type EdgeHandler = (direct: Direction) => void;
+
 type EdgeRule = {
 	[direct: string]: EdgeHandler | EdgeStaticRule;
 	left?: EdgeHandler | EdgeStaticRule;
@@ -30,33 +32,31 @@ type EdgeRule = {
 	up?: EdgeHandler | EdgeStaticRule;
 	down?: EdgeHandler | EdgeStaticRule;
 };
-type GridEventHandler = (data?: any) => void;
 
-type GridTable = {
-	cols?: number;
-	rows?: number;
-};
+type GridEventHandler = (data?: any) => void;
 
 type Point = {
 	x?: number;
 	y?: number;
 };
 
-type Recagle = {
+type Recagle = Point & {
 	w?: number;
 	h?: number;
-} & Point;
+};
 
 export type GridOption = {
 	edgeRule?: EdgeRule;
 	forceRec?: boolean | Point[] | 'strict' | Recagle;
 	frameId?: string;
-	grid?: GridTable;
+	cols?: number;
+	rows?: number;
 	hoverClass?: string;
 	keyMap?: KeyMap;
 	name?: string;
 	offset?: Point;
 	onBlur?: GridEventHandler;
+	onBeforeChange?: GridEventHandler;
 	onChange?: GridEventHandler;
 	onFocus?: GridEventHandler;
 	onHover?: GridEventHandler;
@@ -73,14 +73,10 @@ const defaultOptions: GridOption = {
 	},
 	forceRec: false,
 	keyMap: KEY_CODE_MAPS,
-	grid: { cols: 1, rows: 1 },
 	offset: {
 		x: 0,
 		y: 0,
 	},
-	onFocus: EMPTY_FUNC,
-	onBlur: EMPTY_FUNC,
-	selectedIndex: 0,
 };
 
 export default class Grid {
@@ -88,21 +84,22 @@ export default class Grid {
 	edgeRule: EdgeRule;
 	forceRec: boolean | 'strict' | Recagle;
 	frame?: HTMLElement;
-	grid: GridTable;
+	cols?: number;
+	rows?: number;
 	items: HTMLElement[];
 	keyMap: KeyMap;
 	matrix: Point[];
 	name: string;
 	offset: Point;
 	onBeforeChange?: GridEventHandler;
-	onBlur: GridEventHandler;
+	onBlur?: GridEventHandler;
 	onChange?: GridEventHandler;
-	onFocus: GridEventHandler;
+	onFocus?: GridEventHandler;
 	onHover?: GridEventHandler;
 	onNoData?: GridEventHandler;
 	onOk?: GridEventHandler;
 	previousIndex = -1;
-	selectedIndex = 0;
+	selectedIndex :number;
 	selector: string;
 	private hoverTimer = 0;
 	private hoverDelay = 1e3;
@@ -117,12 +114,15 @@ export default class Grid {
 
 		this.edgeRule = sets.edgeRule;
 		this.keyMap = sets.keyMap;
-		this.grid = sets.grid;
+		this.cols = sets.cols ?? 1;
+		this.rows = sets.rows ?? 1;
+		this.selectedIndex = sets.selectedIndex ?? 0;
 		this.offset = sets.offset;
-		this.onFocus = sets.onFocus;
-		this.onOk = sets.onOk;
-		this.onBlur = sets.onBlur;
-		this.onChange = sets.onChange;
+		this.onFocus = sets.onFocus && sets.onFocus.bind(this);
+		this.onOk = sets.onOk && sets.onOk.bind(this);
+		this.onBlur = sets.onBlur && sets.onBlur.bind(this);
+		this.onBeforeChange = sets.onBeforeChange && sets.onBeforeChange.bind(this);
+		this.onChange = sets.onChange && sets.onChange.bind(this);
 		this.hoverClass = sets.hoverClass;
 
 		if (sets.frameId) {
@@ -141,7 +141,7 @@ export default class Grid {
 		}
 
 		if (this.length) {
-			this.setIndex(sets.selectedIndex, DIRECTIONS.AUTO);
+			this.setIndex(this.selectedIndex, DIRECTIONS.AUTO);
 		}
 	}
 
@@ -153,7 +153,7 @@ export default class Grid {
 			addClass(this.selectedElement, this.hoverClass);
 		}
 
-		if (this.onFocus !== EMPTY_FUNC) {
+		if (this.onFocus) {
 			this.onFocus.call(this);
 		}
 	}
@@ -166,7 +166,7 @@ export default class Grid {
 			removeClass(this.selectedElement, this.hoverClass);
 		}
 
-		if (this.onBlur !== EMPTY_FUNC) {
+		if (this.onBlur) {
 			this.onBlur.call(this);
 		}
 	}
@@ -180,11 +180,13 @@ export default class Grid {
 	}
 
 	setIndex(t: number, direc?: Direction) {
+
 		if (this.onBeforeChange) {
-			this.onBeforeChange(direc);
+			this.onBeforeChange.call(this, direc);
 		}
+
 		if (t < 0 || t + 1 > this.length) {
-			this.onOverRange(direc);
+			this.overRange(direc);
 		} else {
 			if (this.hoverTimer) {
 				clearTimeout(this.hoverTimer);
@@ -204,16 +206,20 @@ export default class Grid {
 						y: point.top + this.offset.y,
 					};
 				}
+
 				mx = this.matrix[t];
 
-				if ((this.grid.rows > 1 && direc) || direc === 'auto') {
+				if ((this.rows > 1 && direc) || direc === 'auto') {
 					frame.style.cssText += ';top:' + mx.y + 'px;';
 				}
-				if ((this.grid.cols > 1 && direc) || direc === 'auto') {
+				if ((this.cols > 1 && direc) || direc === 'auto') {
 					frame.style.cssText += ';left:' + mx.x + 'px;';
 				}
 			}
-			if (this.onChange) this.onChange(direc);
+
+			if (this.onChange) {
+				this.onChange(direc);
+			}
 
 			if (this.onHover && direc) {
 				this.hoverTimer = window.setTimeout(() => {
@@ -260,8 +266,8 @@ export default class Grid {
 					}
 				} else {
 					//press arrow key
-					const cols = this.grid.cols;
-					const rows = this.grid.rows;
+					const cols = this.cols;
+					const rows = this.rows;
 
 					if (
 						(keyName === KEY_NAMES.left && this.selectedIndex % cols === 0) ||
@@ -270,7 +276,7 @@ export default class Grid {
 						(keyName === KEY_NAMES.down &&
 							this.selectedIndex + cols + 1 > Math.min(rows * cols, this.length))
 					) {
-						this.onOverRange(keyName as Direction);
+						this.overRange(keyName as Direction);
 					} else {
 						let n =
 							keyName === KEY_NAMES.left
@@ -287,7 +293,7 @@ export default class Grid {
 		}
 	}
 
-	private onOverRange(w: Direction) {
+	private overRange(w: Direction) {
 		if (this.edgeRule[w] === EDGE_RULES.STOP) {
 			return;
 		}
@@ -332,14 +338,13 @@ export default class Grid {
 				};
 			}
 
-			let x: number,
-				y: number,
-				g = this.grid;
+			let c = this.cols,
+				r = this.rows;
 
-			for (let i = 0, t = g.cols * g.rows; i < t; i++) {
-				x = (i % g.cols) * rec.w + rec.x;
-				y = ((i / g.cols) | 0) * rec.h + rec.y;
-				this.matrix[i] = { x: x, y: y };
+			for (let i = 0, t = c * r; i < t; i++) {
+				let x = (i % c) * rec.w + rec.x;
+				let y = ((i / c) | 0) * rec.h + rec.y;
+				this.matrix[i] = { x, y };
 			}
 
 			this.forceRec = false;
@@ -354,7 +359,7 @@ export default class Grid {
 				this.frame.style.visibility = 'hidden';
 			}
 			if (this.onNoData) {
-				this.onNoData();
+				this.onNoData.call(this);
 			}
 		}
 		// TODO: need check before use, maybe not supported

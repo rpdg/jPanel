@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 // tsc -t es5 -w demo.ts
 x$.log.active(true);
+x$.dom.probe();
 (function b() {
     return __awaiter(this, void 0, void 0, function () {
         var m;
@@ -52,7 +53,7 @@ x$.log.active(true);
                     })];
                 case 1:
                     m = _a.sent();
-                    console.log(m);
+                    console.warn('getJSON =>', m);
                     return [2 /*return*/];
             }
         });
@@ -63,7 +64,7 @@ var menuBar = x$.dom.byId('menu');
 var fullIemList = x$.dom.select('#menu>li');
 var menu = x$.grid('#menu>.show', {
     name: 'menu',
-    grid: { cols: 6 },
+    cols: 6,
     forceRec: 'strict',
     hoverClass: 'hover',
     edgeRule: {
@@ -132,14 +133,14 @@ var menu = x$.grid('#menu>.show', {
         },
     },
     onOk: function () {
-        console.log(menu.selectedIndex, menu.selectedElement);
-    }
+        console.log(this.selectedIndex, menu.selectedElement);
+    },
 });
 //top btn
 var topBtns = x$.grid('.navBtn', {
     name: 'topBtns',
     frameId: 'frame0',
-    grid: { cols: 2 },
+    cols: 2,
     edgeRule: {
         left: function () {
             topBtns.jumpToBox(topNumber);
@@ -148,25 +149,11 @@ var topBtns = x$.grid('.navBtn', {
             topBtns.jumpToBox(menu);
         },
     },
-    onOk: function () {
-        // switch (this.selectedIndex) {
-        // 	case 0: {
-        // 		//go to category index page
-        // 		location.assign(x$.on.homepage);
-        // 		break;
-        // 	}
-        // 	case 1: {
-        // 		//go to main home page
-        // 		location.assign(x$.on.homepage);
-        // 		break;
-        // 	}
-        // }
-    },
 });
 //top numbers
 var topNumber = x$.grid('#tips span', {
     hoverClass: 'hover',
-    grid: { cols: 3 },
+    cols: 3,
     edgeRule: {
         right: function () {
             this.jumpToBox(topBtns);

@@ -17,22 +17,33 @@
                 font-size: 16px;`;
 
 				document.body.appendChild(elChild);
-
-				window.console.log = function (...data: any[]) {
-					if (elChild.scrollHeight > 600) {
-						elChild.innerHTML = '';
-					} else {
-						elChild.innerHTML += '<hr>';
-					}
-					for (var i = 0, len = data.length; i < len; i++) {
-						elChild.innerHTML += data[i] + '<hr>';
-					}
-				};
-
-				window.console.clear = function () {
-					elChild.innerHTML = '';
-				};
 			}
+
+			window.console.log = function (...data: any[]) {
+				if (elChild.scrollHeight > 600) {
+					elChild.innerHTML = '';
+				} else {
+					elChild.innerHTML += '<hr>';
+				}
+				for (var i = 0, len = data.length; i < len; i++) {
+					elChild.innerHTML += data[i] + '<hr>';
+				}
+			};
+
+			window.console.warn = function (...data: any[]) {
+				if (elChild.scrollHeight > 600) {
+					elChild.innerHTML = '';
+				} else {
+					elChild.innerHTML += '<hr>';
+				}
+				for (var i = 0, len = data.length; i < len; i++) {
+					elChild.innerHTML += `<span style="color:orange;font-size: 16px;">${data[i]}</span><hr>`;
+				}
+			};
+
+			window.console.clear = function () {
+				elChild.innerHTML = '';
+			};
 		}
 	},
 };

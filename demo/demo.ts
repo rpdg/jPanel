@@ -3,6 +3,7 @@
 // tsc -t es5 -w demo.ts
 
 x$.log.active(true);
+x$.dom.probe();
 
 (async function b() {
 	let m = await x$.getJSON({
@@ -13,17 +14,15 @@ x$.log.active(true);
 			endTime: '2020-08-06 23:59:59',
 		},
 	});
-	console.log(m);
+	console.warn('getJSON =>', m);
 })();
-
-
 
 let overCount = 0;
 let menuBar = x$.dom.byId('menu');
 let fullIemList = x$.dom.select('#menu>li');
 let menu = x$.grid('#menu>.show', {
 	name: 'menu',
-	grid: { cols: 6 },
+	cols: 6,
 	forceRec: 'strict',
 	hoverClass: 'hover',
 	edgeRule: {
@@ -100,16 +99,16 @@ let menu = x$.grid('#menu>.show', {
 			}
 		},
 	},
-	onOk: function(){
-		console.log(menu.selectedIndex , menu.selectedElement)
-	}
+	onOk: function () {
+		console.log(this.selectedIndex, menu.selectedElement);
+	},
 });
 
 //top btn
 let topBtns = x$.grid('.navBtn', {
 	name: 'topBtns',
 	frameId: 'frame0',
-	grid: { cols: 2 },
+	cols: 2,
 	edgeRule: {
 		left: function () {
 			topBtns.jumpToBox(topNumber);
@@ -118,7 +117,7 @@ let topBtns = x$.grid('.navBtn', {
 			topBtns.jumpToBox(menu);
 		},
 	},
-	onOk: function () {
+	// onOk: function () {
 		// switch (this.selectedIndex) {
 		// 	case 0: {
 		// 		//go to category index page
@@ -131,13 +130,13 @@ let topBtns = x$.grid('.navBtn', {
 		// 		break;
 		// 	}
 		// }
-	},
+	// },
 });
 
 //top numbers
 let topNumber = x$.grid('#tips span', {
 	hoverClass: 'hover',
-	grid: { cols: 3 },
+	cols: 3,
 	edgeRule: {
 		right: function () {
 			this.jumpToBox(topBtns);
@@ -151,4 +150,4 @@ let topNumber = x$.grid('#tips span', {
 	},
 });
 
-x$.box.addGrid(menu, topBtns , topNumber).active();
+x$.box.addGrid(menu, topBtns, topNumber).active();

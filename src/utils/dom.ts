@@ -2,6 +2,32 @@
 	return Array.prototype.slice.call((context || document).querySelectorAll(selector));
 }
 
+
+export function probe(){
+	let body :HTMLElement = document.body;
+	
+	if(!body.classList){
+		console.warn('classList not supported');
+	}
+
+	if(!body.querySelectorAll){
+		console.warn('querySelectorAll not supported');
+	}
+
+	if(!body.getBoundingClientRect){
+		console.warn('getBoundingClientRect not supported');
+	}
+
+	
+
+	if(!window.getComputedStyle){
+		console.warn('window.getComputedStyle not supported');
+	}
+
+
+
+}
+
 export const byId = function (str: string) {
 	return document.getElementById(str);
 };
