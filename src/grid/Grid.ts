@@ -99,7 +99,7 @@ export default class Grid {
 	onNoData?: GridEventHandler;
 	onOk?: GridEventHandler;
 	previousIndex = -1;
-	selectedIndex :number;
+	selectedIndex: number;
 	selector: string;
 	private hoverTimer = 0;
 	private hoverDelay = 1e3;
@@ -180,7 +180,6 @@ export default class Grid {
 	}
 
 	setIndex(t: number, direc?: Direction) {
-
 		if (this.onBeforeChange) {
 			this.onBeforeChange.call(this, direc);
 		}
@@ -328,14 +327,20 @@ export default class Grid {
 
 		if (typeof fc !== 'boolean' && fc) {
 			// init rec automaticly
-			if (fc === 'strict' && this.length) {
-				let recagle = this.items[0].getBoundingClientRect();
-				rec = {
-					x: recagle.left + this.offset.x,
-					y: recagle.top + this.offset.y,
-					w: recagle.width,
-					h: recagle.height,
-				};
+			if (fc === 'strict') {
+				if (this.length) {
+					let recagle = this.items[0].getBoundingClientRect();
+					rec = {
+						x: recagle.left + this.offset.x,
+						y: recagle.top + this.offset.y,
+						w: recagle.width,
+						h: recagle.height,
+					};
+				} else {
+					rec = { x: 0, y: 0, w: 0, h: 0 };
+				}
+			} else {
+				rec = fc;
 			}
 
 			let c = this.cols,
