@@ -118,18 +118,18 @@ let topBtns = x$.grid('.navBtn', {
 		},
 	},
 	// onOk: function () {
-		// switch (this.selectedIndex) {
-		// 	case 0: {
-		// 		//go to category index page
-		// 		location.assign(x$.on.homepage);
-		// 		break;
-		// 	}
-		// 	case 1: {
-		// 		//go to main home page
-		// 		location.assign(x$.on.homepage);
-		// 		break;
-		// 	}
-		// }
+	// switch (this.selectedIndex) {
+	// 	case 0: {
+	// 		//go to category index page
+	// 		location.assign(x$.on.homepage);
+	// 		break;
+	// 	}
+	// 	case 1: {
+	// 		//go to main home page
+	// 		location.assign(x$.on.homepage);
+	// 		break;
+	// 	}
+	// }
 	// },
 });
 

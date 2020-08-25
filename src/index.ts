@@ -8,6 +8,7 @@ import * as utils from './utils/helper';
 import getJSON from './utils/http';
 import log from './utils/log';
 
+
 const X$ = {
 	bindList,
 	getJSON,
@@ -32,4 +33,3 @@ declare global {
 }
 
 export default X$;
-

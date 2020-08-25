@@ -23,7 +23,7 @@ const DIRECTIONS: {
 
 type EdgeStaticRule = 'stop' | 'loop';
 
-type EdgeHandler = (direct: Direction) => void;
+type EdgeHandler = (this: Grid, direct: Direction) => void;
 
 type EdgeRule = {
 	[direct: string]: EdgeHandler | EdgeStaticRule;
@@ -33,7 +33,7 @@ type EdgeRule = {
 	down?: EdgeHandler | EdgeStaticRule;
 };
 
-type GridEventHandler = (data?: any) => void;
+type GridEventHandler = (this: Grid, data?: any) => void;
 
 type Point = {
 	x?: number;
@@ -104,6 +104,8 @@ export default class Grid {
 	private hoverTimer = 0;
 	private hoverDelay = 1e3;
 	private hoverClass?: string;
+
+	[key: string]: any;
 
 	constructor(selector: string, option: GridOption) {
 		this.selector = selector;
@@ -290,6 +292,15 @@ export default class Grid {
 				}
 			}
 		}
+	}
+
+	extra(extras: any) {
+		for (let key in extras) {
+			if (this[key] === undefined) {
+				this[key] = extras[key];
+			}
+		}
+		return this;
 	}
 
 	private overRange(w: Direction) {
