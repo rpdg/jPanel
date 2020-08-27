@@ -41,6 +41,17 @@
 				}
 			};
 
+			window.console.error = function (...data: any[]) {
+				if (elChild.scrollHeight > 600) {
+					elChild.innerHTML = '';
+				} else {
+					elChild.innerHTML += '<hr>';
+				}
+				for (var i = 0, len = data.length; i < len; i++) {
+					elChild.innerHTML += `<span style="color:red;font-size: 16px;">${data[i]}</span><hr>`;
+				}
+			};
+			
 			window.console.clear = function () {
 				elChild.innerHTML = '';
 			};
