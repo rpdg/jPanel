@@ -1,0 +1,25 @@
+﻿{
+	"name": "zico",
+	"version": "1.9.1",
+	"description": "A web icon framework by ",
+	"main": "index.html",
+	"scripts": { 
+        "test": "echo \"Error: no test specified\" && exit 1" 
+    },
+	"keywords": [
+		"webfont"
+	],
+	"author": "Shanghai  Zoomla!CMS Software co.,ltd",
+	"license": "MIT",
+	"directories": { 
+        "lib": "lib" 
+    },
+	"repository": { 
+        "type": "git", 
+        "url": "git+https://github.com/zoomla/zico.git" 
+    },
+	"bugs": { 
+        "url": "https://github.com/zoomla/zico/issues" 
+    },
+	"homepage": "https://ico.z01.com"
+}

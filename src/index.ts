@@ -8,7 +8,6 @@ import * as utils from './utils/helper';
 import getJSON from './utils/http';
 import log from './utils/log';
 
-
 const X$ = {
 	bindList,
 	getJSON,
@@ -16,8 +15,8 @@ const X$ = {
 	utils,
 	Consts,
 	log,
-	grid: function (selector: string, option: GridOption) {
-		return new Grid(selector, option);
+	grid: function <T = {}>(selector: string, option: GridOption) {
+		return new Grid<T>(selector, option);
 	},
 	box: Box,
 	pageList: function (cfg: PageListConfig) {

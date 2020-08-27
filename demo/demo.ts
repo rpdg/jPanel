@@ -1,5 +1,6 @@
 ﻿/// <reference path="../dist/index.d.ts" />
 
+
 // tsc -t es5 -w demo.ts
 
 x$.log.active(true);
@@ -17,10 +18,12 @@ x$.dom.probe();
 	console.warn('getJSON =>', m);
 })();
 
+
+
 let overCount = 0;
 let menuBar = x$.dom.byId('menu');
 let fullIemList = x$.dom.select('#menu>li');
-let menu = x$.grid('#menu>.show', {
+let menu = x$.grid<{ any: number }>('#menu>.show', {
 	name: 'menu',
 	cols: 6,
 	forceRec: 'strict',
@@ -100,7 +103,7 @@ let menu = x$.grid('#menu>.show', {
 		},
 	},
 	onOk: function () {
-		console.log(this.selectedIndex, menu.selectedElement);
+		console.log(this.selectedIndex, menu.selectedElement, menu.ex.any);
 	},
 });
 

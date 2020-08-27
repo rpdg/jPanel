@@ -79,7 +79,7 @@ const defaultOptions: GridOption = {
 	},
 };
 
-export default class Grid {
+export default class Grid<T = {}> {
 	boxIndex = -1;
 	edgeRule: EdgeRule;
 	forceRec: boolean | 'strict' | Recagle;
@@ -105,7 +105,7 @@ export default class Grid {
 	private hoverDelay = 1e3;
 	private hoverClass?: string;
 
-	[key: string]: any;
+	ex: T;
 
 	constructor(selector: string, option: GridOption) {
 		this.selector = selector;
@@ -294,10 +294,10 @@ export default class Grid {
 		}
 	}
 
-	extra(extras: any) {
-		for (let key in extras) {
-			if (this[key] === undefined) {
-				this[key] = extras[key];
+	extra(extraObject: T) {
+		for (let key in extraObject) {
+			if (this.ex[key] === undefined) {
+				this.ex[key] = extraObject[key];
 			}
 		}
 		return this;

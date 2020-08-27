@@ -1,9 +1,12 @@
 {
-	"name": "epg-panel",
+	"name": "@rpdg/epg-panel",
 	"version": "2.0.3",
 	"description": "A javascript library for epg on STB (smart TV box)",
 	"bugs": "https://github.com/rpdg/jPanel/issues",
 	"homepage": "https://github.com/rpdg/jPanel",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
 	"keywords": [
 		"epg",
 		"stb",
@@ -14,7 +17,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/rpdg/jPanel.git"
+		"url": "git+https://github.com/rpdg/jPanel.git"
 	},
 	"private": false,
 	"main": "dist/index.js",
