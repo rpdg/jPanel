@@ -295,6 +295,9 @@ export default class Grid<T = {}> {
 	}
 
 	extra(extraObject: T) {
+		if(this.ex === undefined){
+			this.ex = {} as T;
+		}
 		for (let key in extraObject) {
 			if (this.ex[key] === undefined) {
 				this.ex[key] = extraObject[key];

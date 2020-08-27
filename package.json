@@ -1,6 +1,6 @@
 {
 	"name": "@rpdg/epg-panel",
-	"version": "2.0.4",
+	"version": "2.0.5",
 	"description": "A javascript library for epg on STB (smart TV box)",
 	"bugs": "https://github.com/rpdg/jPanel/issues",
 	"homepage": "https://github.com/rpdg/jPanel",
