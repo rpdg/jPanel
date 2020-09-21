@@ -6,24 +6,37 @@
 export function probe(){
 	let body :HTMLElement = document.body;
 	
+	const {clientHeight , clientWidth} = document.body;
+	console.log(clientWidth + ' x ' + clientHeight + '; PixelRatio: ' + window.devicePixelRatio);
+
+
 	if(!body.classList){
 		console.warn('classList not supported');
+	}
+	else{
+		console.log('classList supported');
 	}
 
 	if(!body.querySelectorAll){
 		console.warn('querySelectorAll not supported');
 	}
+	else{
+		console.log('querySelectorAll supported');
+	}
 
 	if(!body.getBoundingClientRect){
 		console.warn('getBoundingClientRect not supported');
 	}
-
-	
-
-	if(!window.getComputedStyle){
-		console.warn('window.getComputedStyle not supported');
+	else{
+		console.log('getBoundingClientRect supported');
 	}
 
+	if(!window.Promise){
+		console.warn('window.Promise not supported');
+	}
+	else{
+		console.log('Promise supported');
+	}
 
 
 }

@@ -241,7 +241,7 @@ export const delegate = function (
 	});
 };
 
-export function delay(interval: number, num: number) {
+export function delay(interval: number) {
 	return new Promise((resolve) =>
 		setTimeout(() => {
 			// console.log('num=>' , num);
