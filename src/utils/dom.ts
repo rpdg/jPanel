@@ -10,6 +10,7 @@ export function probe(){
 	console.log(clientWidth + ' x ' + clientHeight + '; PixelRatio: ' + window.devicePixelRatio);
 
 
+	// 
 	if(!body.classList){
 		console.warn('classList not supported');
 	}
@@ -17,6 +18,7 @@ export function probe(){
 		console.log('classList supported');
 	}
 
+	// 
 	if(!body.querySelectorAll){
 		console.warn('querySelectorAll not supported');
 	}
@@ -24,6 +26,7 @@ export function probe(){
 		console.log('querySelectorAll supported');
 	}
 
+	// 
 	if(!body.getBoundingClientRect){
 		console.warn('getBoundingClientRect not supported');
 	}
@@ -31,6 +34,7 @@ export function probe(){
 		console.log('getBoundingClientRect supported');
 	}
 
+	// 
 	if(!window.Promise){
 		console.warn('window.Promise not supported');
 	}
@@ -38,6 +42,13 @@ export function probe(){
 		console.log('Promise supported');
 	}
 
+	// 
+	if(window.decodeURIComponent){
+		console.log('decodeURIComponent supported');
+	}
+	else{
+		console.warn('decodeURIComponent not supported');
+	}
 
 }
 

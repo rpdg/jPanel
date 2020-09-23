@@ -211,6 +211,24 @@ export const htmlDecode = function (str: string): string {
 	});
 };
 
+/**
+ * Get query string in url
+ * @param variable
+ */
+export function getQueryString(variable: string): string {
+	const query = window.location.search.substring(1);
+	const vars = query.split('&');
+
+	for (let i = 0, l = vars.length; i < l; i++) {
+		let pair = vars[i].split('=');
+		if (pair[0] == variable) {
+			return decodeURIComponent(pair[1]);
+		}
+	}
+
+	return null;
+}
+
 //https://codepen.io/malyw/pen/azJGNw
 const isSame = document.body.isEqualNode ? 'isEqualNode' : 'isSameNode';
 export const delegate = function (
