@@ -7,7 +7,7 @@
 				elChild = document.createElement('div');
 				elChild.id = 'divScreenLog';
 
-				elChild.style.cssText += `position: absolute;
+				elChild.style.cssText += `position: fixed;
                 z-index: 99999;
                 top: 80px;
                 right: 80px;

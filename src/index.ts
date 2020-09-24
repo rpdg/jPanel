@@ -1,4 +1,5 @@
-﻿import Box from './grid/Box';
+﻿// import * as packageInfo from '../package.json';
+import Box from './grid/Box';
 import Grid, { GridOption } from './grid/Grid';
 import PageList, { PageListConfig } from './grid/PageList';
 import bindList from './utils/bindList';
@@ -8,14 +9,17 @@ import * as utils from './utils/helper';
 import getJSON from './utils/http';
 import log from './utils/log';
 
+
+
 const X$ = {
+	// ver: packageInfo.version,
 	bindList,
 	getJSON,
 	dom,
 	utils,
 	Consts,
 	log,
-	grid: function <T = {}>(selector: string, option: GridOption) {
+	grid: function <T = {}>(selector: string, option: GridOption<T>) {
 		return new Grid<T>(selector, option);
 	},
 	box: Box,

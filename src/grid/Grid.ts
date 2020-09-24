@@ -8,7 +8,7 @@ const EDGE_RULES = {
 	LOOP: 'loop',
 };
 
-type Direction = 'up' | 'down' | 'left' | 'right' | 'auto' | 'sync';
+type Direction = 'up' | 'down' | 'left' | 'right' | 'auto' | 'sync' ;
 
 const DIRECTIONS: {
 	[key: string]: Direction;
@@ -18,22 +18,22 @@ const DIRECTIONS: {
 	LEFT: 'left',
 	RIGHT: 'right',
 	AUTO: 'auto',
-	SYNC: 'sync',
+	SYNC: 'sync'
 };
 
 type EdgeStaticRule = 'stop' | 'loop';
 
-type EdgeHandler = (this: Grid, direct: Direction) => void;
+type EdgeHandler<T> = (this: Grid<T>, direct: Direction) => void;
 
-type EdgeRule = {
-	[direct: string]: EdgeHandler | EdgeStaticRule;
-	left?: EdgeHandler | EdgeStaticRule;
-	right?: EdgeHandler | EdgeStaticRule;
-	up?: EdgeHandler | EdgeStaticRule;
-	down?: EdgeHandler | EdgeStaticRule;
+type EdgeRule<T> = {
+	[direct: string]: EdgeHandler<T> | EdgeStaticRule;
+	left?: EdgeHandler<T> | EdgeStaticRule;
+	right?: EdgeHandler<T> | EdgeStaticRule;
+	up?: EdgeHandler<T> | EdgeStaticRule;
+	down?: EdgeHandler<T> | EdgeStaticRule;
 };
 
-type GridEventHandler = (this: Grid, data?: any) => void;
+type GridEventHandler<T> = (this: Grid<T>, data?: any) => void;
 
 type Point = {
 	x?: number;
@@ -45,8 +45,8 @@ type Recagle = Point & {
 	h?: number;
 };
 
-export type GridOption = {
-	edgeRule?: EdgeRule;
+export type GridOption<T> = {
+	edgeRule?: EdgeRule<T>;
 	forceRec?: boolean | Point[] | 'strict' | Recagle;
 	frameId?: string;
 	cols?: number;
@@ -55,16 +55,16 @@ export type GridOption = {
 	keyMap?: KeyMap;
 	name?: string;
 	offset?: Point;
-	onBlur?: GridEventHandler;
-	onBeforeChange?: GridEventHandler;
-	onChange?: GridEventHandler;
-	onFocus?: GridEventHandler;
-	onHover?: GridEventHandler;
-	onOk?: GridEventHandler;
+	onBlur?: GridEventHandler<T>;
+	onBeforeChange?: GridEventHandler<T>;
+	onChange?: GridEventHandler<T>;
+	onFocus?: GridEventHandler<T>;
+	onHover?: GridEventHandler<T>;
+	onOk?: GridEventHandler<T>;
 	selectedIndex?: number;
 };
 
-const defaultOptions: GridOption = {
+const defaultOptions: GridOption<{}> = {
 	edgeRule: {
 		up: 'stop',
 		down: 'stop',
@@ -81,7 +81,7 @@ const defaultOptions: GridOption = {
 
 export default class Grid<T = {}> {
 	boxIndex = -1;
-	edgeRule: EdgeRule;
+	edgeRule: EdgeRule<T>;
 	forceRec: boolean | 'strict' | Recagle;
 	frame?: HTMLElement;
 	cols?: number;
@@ -91,26 +91,28 @@ export default class Grid<T = {}> {
 	matrix: Point[];
 	name: string;
 	offset: Point;
-	onBeforeChange?: GridEventHandler;
-	onBlur?: GridEventHandler;
-	onChange?: GridEventHandler;
-	onFocus?: GridEventHandler;
-	onHover?: GridEventHandler;
-	onNoData?: GridEventHandler;
-	onOk?: GridEventHandler;
+	onBeforeChange?: GridEventHandler<T>;
+	onBlur?: GridEventHandler<T>;
+	onChange?: GridEventHandler<T>;
+	onFocus?: GridEventHandler<T>;
+	onHover?: GridEventHandler<T>;
+	onNoData?: GridEventHandler<T>;
+	onOk?: GridEventHandler<T>;
 	previousIndex = -1;
 	selectedIndex: number;
 	selector: string;
 	private hoverTimer = 0;
-	private hoverDelay = 1e3;
+	private hoverDelay = 2e2;
 	private hoverClass?: string;
 
-	ex: T;
+	private isActive : boolean = false;
 
-	constructor(selector: string, option: GridOption) {
+	ext: T = {} as T;
+
+	constructor(selector: string, option: GridOption<T>) {
 		this.selector = selector;
 
-		let sets = deepExtend<GridOption>({}, defaultOptions, option);
+		let sets = deepExtend<GridOption<T>>({}, defaultOptions, option);
 
 		this.name = option.name ?? `grid-${componentUid()}`;
 
@@ -125,6 +127,7 @@ export default class Grid<T = {}> {
 		this.onBlur = sets.onBlur && sets.onBlur.bind(this);
 		this.onBeforeChange = sets.onBeforeChange && sets.onBeforeChange.bind(this);
 		this.onChange = sets.onChange && sets.onChange.bind(this);
+		this.onHover = sets.onHover && sets.onHover.bind(this);
 		this.hoverClass = sets.hoverClass;
 
 		if (sets.frameId) {
@@ -148,6 +151,8 @@ export default class Grid<T = {}> {
 	}
 
 	focus() {
+		this.isActive = true;
+
 		if (this.frame) {
 			this.frame.style.display = 'block';
 		}
@@ -158,14 +163,28 @@ export default class Grid<T = {}> {
 		if (this.onFocus) {
 			this.onFocus.call(this);
 		}
+
+		if (this.onHover) {
+			this.hoverTimer = window.setTimeout(() => {
+				if(this.isActive){
+					this.onHover(DIRECTIONS.AUTO);
+				}
+			}, this.hoverDelay);
+		}
 	}
 
 	blur() {
+		this.isActive = false;
 		if (this.frame) {
 			this.frame.style.display = 'none';
 		}
 		if (this.hoverClass) {
 			removeClass(this.selectedElement, this.hoverClass);
+		}
+
+		if (this.hoverTimer) {
+			clearTimeout(this.hoverTimer);
+			this.hoverTimer = 0;
 		}
 
 		if (this.onBlur) {
@@ -183,7 +202,7 @@ export default class Grid<T = {}> {
 
 	setIndex(t: number, direc?: Direction) {
 		if (this.onBeforeChange) {
-			this.onBeforeChange.call(this, direc);
+			this.onBeforeChange(direc);
 		}
 
 		if (t < 0 || t + 1 > this.length) {
@@ -210,23 +229,27 @@ export default class Grid<T = {}> {
 
 				mx = this.matrix[t];
 
-				if ((this.rows > 1 && direc) || direc === 'auto') {
-					frame.style.cssText += ';top:' + mx.y + 'px;';
+				if ((this.rows > 1 && direc) || direc === DIRECTIONS.AUTO) {
+					frame.style.top = mx.y + 'px';
 				}
 				if ((this.cols > 1 && direc) || direc === 'auto') {
-					frame.style.cssText += ';left:' + mx.x + 'px;';
+					frame.style.left = mx.x + 'px';
 				}
 			}
 
-			if (this.onChange) {
+			if(this.onChange && direc !== DIRECTIONS.AUTO) {
 				this.onChange(direc);
 			}
+			
 
-			if (this.onHover && direc) {
+			if (this.onHover) {
 				this.hoverTimer = window.setTimeout(() => {
-					this.onHover(direc);
+					if(this.isActive){
+						this.onHover(direc);
+					}
 				}, this.hoverDelay);
 			}
+			
 			//switch hover class
 			if (this.hoverClass && direc != DIRECTIONS.AUTO) {
 				let prevElem = this.previousElement;
@@ -295,12 +318,9 @@ export default class Grid<T = {}> {
 	}
 
 	extra(extraObject: T) {
-		if(this.ex === undefined){
-			this.ex = {} as T;
-		}
 		for (let key in extraObject) {
-			if (this.ex[key] === undefined) {
-				this.ex[key] = extraObject[key];
+			if (this.ext[key] === undefined) {
+				this.ext[key] = extraObject[key];
 			}
 		}
 		return this;
@@ -318,7 +338,7 @@ export default class Grid<T = {}> {
 					let i = this.selectedIndex - 1;
 					this.setIndex(i < 0 ? this.length - 1 : i, w);
 				} else {
-					(this.edgeRule[w] as EdgeHandler).call(this, w);
+					(this.edgeRule[w] as EdgeHandler<T>).call(this, w);
 				}
 				break;
 			case DIRECTIONS.DOWN:
@@ -327,7 +347,7 @@ export default class Grid<T = {}> {
 					var i = this.selectedIndex + 1;
 					this.setIndex(i > this.length - 1 ? 0 : i, w);
 				} else {
-					(this.edgeRule[w] as EdgeHandler).call(this, w);
+					(this.edgeRule[w] as EdgeHandler<T>).call(this, w);
 				}
 				break;
 			default:
