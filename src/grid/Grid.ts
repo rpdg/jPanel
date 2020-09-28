@@ -102,7 +102,7 @@ export default class Grid<T = {}> {
 	selectedIndex: number;
 	selector: string;
 	private hoverTimer = 0;
-	private hoverDelay = 2e2;
+	private hoverDelay = 5e2;
 	private hoverClass?: string;
 
 	private isActive : boolean = false;
