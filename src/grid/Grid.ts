@@ -8,7 +8,7 @@ const EDGE_RULES = {
 	LOOP: 'loop',
 };
 
-type Direction = 'up' | 'down' | 'left' | 'right' | 'auto' | 'sync' ;
+type Direction = 'up' | 'down' | 'left' | 'right' | 'auto' | 'sync';
 
 const DIRECTIONS: {
 	[key: string]: Direction;
@@ -18,7 +18,7 @@ const DIRECTIONS: {
 	LEFT: 'left',
 	RIGHT: 'right',
 	AUTO: 'auto',
-	SYNC: 'sync'
+	SYNC: 'sync',
 };
 
 type EdgeStaticRule = 'stop' | 'loop';
@@ -33,7 +33,7 @@ type EdgeRule<T> = {
 	down?: EdgeHandler<T> | EdgeStaticRule;
 };
 
-type GridEventHandler<T> = (this: Grid<T>, data?: any) => void;
+type GridEventHandler<T> = (this: Grid<T>, ...data: any) => any;
 
 type Point = {
 	x?: number;
@@ -56,8 +56,8 @@ export type GridOption<T> = {
 	name?: string;
 	offset?: Point;
 	onBlur?: GridEventHandler<T>;
-	onBeforeChange?: GridEventHandler<T>;
-	onChange?: GridEventHandler<T>;
+	onBeforeChange?: (this: Grid<T>, direc: Direction, targetIndex: number) => boolean | void;
+	onChanged?: GridEventHandler<T>;
 	onFocus?: GridEventHandler<T>;
 	onHover?: GridEventHandler<T>;
 	onOk?: GridEventHandler<T>;
@@ -91,9 +91,9 @@ export default class Grid<T = {}> {
 	matrix: Point[];
 	name: string;
 	offset: Point;
-	onBeforeChange?: GridEventHandler<T>;
+	onBeforeChange?: (this: Grid<T>, direc: Direction, targetIndex: number) => boolean | void;
 	onBlur?: GridEventHandler<T>;
-	onChange?: GridEventHandler<T>;
+	onChanged?: GridEventHandler<T>;
 	onFocus?: GridEventHandler<T>;
 	onHover?: GridEventHandler<T>;
 	onNoData?: GridEventHandler<T>;
@@ -105,7 +105,7 @@ export default class Grid<T = {}> {
 	private hoverDelay = 5e2;
 	private hoverClass?: string;
 
-	private isActive : boolean = false;
+	private isActive: boolean = false;
 
 	ext: T = {} as T;
 
@@ -126,7 +126,7 @@ export default class Grid<T = {}> {
 		this.onOk = sets.onOk && sets.onOk.bind(this);
 		this.onBlur = sets.onBlur && sets.onBlur.bind(this);
 		this.onBeforeChange = sets.onBeforeChange && sets.onBeforeChange.bind(this);
-		this.onChange = sets.onChange && sets.onChange.bind(this);
+		this.onChanged = sets.onChanged && sets.onChanged.bind(this);
 		this.onHover = sets.onHover && sets.onHover.bind(this);
 		this.hoverClass = sets.hoverClass;
 
@@ -166,7 +166,7 @@ export default class Grid<T = {}> {
 
 		if (this.onHover) {
 			this.hoverTimer = window.setTimeout(() => {
-				if(this.isActive){
+				if (this.isActive) {
 					this.onHover(DIRECTIONS.AUTO);
 				}
 			}, this.hoverDelay);
@@ -201,8 +201,14 @@ export default class Grid<T = {}> {
 	}
 
 	setIndex(t: number, direc?: Direction) {
+		let willNotChangeIndex = false;
+
 		if (this.onBeforeChange) {
-			this.onBeforeChange(direc);
+			willNotChangeIndex = !!this.onBeforeChange(direc, t);
+		}
+
+		if (willNotChangeIndex) {
+			return;
 		}
 
 		if (t < 0 || t + 1 > this.length) {
@@ -220,10 +226,11 @@ export default class Grid<T = {}> {
 			if (frame) {
 				if (!this.matrix[t] || this.forceRec === true) {
 					// TODO: maybe not supported
-					let point = this.items[t].getBoundingClientRect();
+					// let point = this.items[t].getBoundingClientRect();
+					let point = x$.dom.getPosition(this.items[t]);
 					this.matrix[t] = {
-						x: point.left + this.offset.x,
-						y: point.top + this.offset.y,
+						x: point.left + window.scrollX + this.offset.x,
+						y: point.top + window.scrollY + this.offset.y,
 					};
 				}
 
@@ -237,19 +244,18 @@ export default class Grid<T = {}> {
 				}
 			}
 
-			if(this.onChange && direc !== DIRECTIONS.AUTO) {
-				this.onChange(direc);
+			if (this.onChanged && direc !== DIRECTIONS.AUTO) {
+				this.onChanged(direc);
 			}
-			
 
 			if (this.onHover) {
 				this.hoverTimer = window.setTimeout(() => {
-					if(this.isActive){
+					if (this.isActive) {
 						this.onHover(direc);
 					}
 				}, this.hoverDelay);
 			}
-			
+
 			//switch hover class
 			if (this.hoverClass && direc != DIRECTIONS.AUTO) {
 				let prevElem = this.previousElement;

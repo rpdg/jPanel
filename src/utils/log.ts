@@ -1,4 +1,19 @@
-﻿const log = {
+﻿function setLogElementContent(elChild :HTMLElement , color:string , ...data: any[]){
+
+	if (elChild.scrollHeight > 720) {
+		elChild.innerHTML = '';
+	} 
+
+	elChild.innerHTML =  `${elChild.innerHTML}
+		<hr style=" border: none; border-top: 7px double white;"> 
+		<span style="color: ${color};font-size: 16px;">
+		${data.join(`</span><hr style="border: none; border-top: 2px dashed ${color};"><span style="color: ${color};font-size: 16px;">`)}
+		</span>
+	` ;
+}
+
+
+const log = {
 	active: function (b: boolean) {
 		if (b) {
 			let elChild: HTMLElement = document.getElementById('divScreenLog');
@@ -21,36 +36,34 @@
 			}
 
 			window.console.log = function (...data: any[]) {
-				if (elChild.scrollHeight > 600) {
+				if (elChild.clientHeight > 720) {
 					elChild.innerHTML = '';
-				} else {
-					elChild.innerHTML = '<hr>' + elChild.innerHTML;
-				}
-				for (var i = 0, len = data.length; i < len; i++) {
-					elChild.innerHTML = data[i] + '<hr>' + elChild.innerHTML;
-				}
+				} 
+				// else {
+				// 	elChild.innerHTML = `${elChild.innerHTML}<hr style=" border: none; border-top: 7px double white;">` ;
+				// }
+				// for (let i = 0, len = data.length; i < len; i++) {
+				// 	data[i] += '<hr>' ;
+				// }
+				
+				setLogElementContent(elChild , '#fff' , ...data);
 			};
 
 			window.console.warn = function (...data: any[]) {
-				if (elChild.scrollHeight > 600) {
-					elChild.innerHTML = '';
-				} else {
-					elChild.innerHTML = '<hr>' + elChild.innerHTML;
-				}
-				for (var i = 0, len = data.length; i < len; i++) {
-					elChild.innerHTML = `<span style="color:orange;font-size: 16px;">${data[i]}</span><hr>` + elChild.innerHTML;;
-				}
+				setLogElementContent(elChild , 'orange' , ...data);
+				// if (elChild.clientHeight > 720) {
+				// 	elChild.innerHTML = '';
+				// }
+				// elChild.innerHTML =  `${elChild.innerHTML}
+				// 	<hr style=" border: none; border-top: 7px double white;"> 
+				// 	<span style="color: orange;font-size: 16px;">
+				// 	${data.join('</span><hr><span style="color:red;font-size: 16px;">')}
+				// 	</span>
+				// ` ;
 			};
 
 			window.console.error = function (...data: any[]) {
-				if (elChild.scrollHeight > 600) {
-					elChild.innerHTML = '';
-				} else {
-					elChild.innerHTML = '<hr>' + elChild.innerHTML;
-				}
-				for (var i = 0, len = data.length; i < len; i++) {
-					elChild.innerHTML = `<span style="color:red;font-size: 16px;">${data[i]}</span><hr>` + elChild.innerHTML;;
-				}
+				setLogElementContent(elChild , 'red' , ...data);
 			};
 			
 			window.console.clear = function () {

@@ -2,54 +2,46 @@
 	return Array.prototype.slice.call((context || document).querySelectorAll(selector));
 }
 
+export function probe() {
+	let body: HTMLElement = document.body;
 
-export function probe(){
-	let body :HTMLElement = document.body;
-	
-	const {clientHeight , clientWidth} = document.body;
+	const { clientHeight, clientWidth } = document.body;
 	console.log(clientWidth + ' x ' + clientHeight + '; PixelRatio: ' + window.devicePixelRatio);
 
-
-	// 
-	if(!body.classList){
+	//
+	if (!body.classList) {
 		console.warn('classList not supported');
-	}
-	else{
+	} else {
 		console.log('classList supported');
 	}
 
-	// 
-	if(!body.querySelectorAll){
+	//
+	if (!body.querySelectorAll) {
 		console.warn('querySelectorAll not supported');
-	}
-	else{
+	} else {
 		console.log('querySelectorAll supported');
 	}
 
-	// 
-	if(!body.getBoundingClientRect){
+	//
+	if (!body.getBoundingClientRect) {
 		console.warn('getBoundingClientRect not supported');
-	}
-	else{
+	} else {
 		console.log('getBoundingClientRect supported');
 	}
 
-	// 
-	if(!window.Promise){
+	//
+	if (!window.Promise) {
 		console.warn('window.Promise not supported');
-	}
-	else{
+	} else {
 		console.log('Promise supported');
 	}
 
-	// 
-	if(window.decodeURIComponent){
+	//
+	if (window.decodeURIComponent) {
 		console.log('decodeURIComponent supported');
-	}
-	else{
+	} else {
 		console.warn('decodeURIComponent not supported');
 	}
-
 }
 
 export const byId = function (str: string) {
@@ -60,6 +52,32 @@ export const byClass = function (clsName: string, context: HTMLElement) {
 };
 export const byTag = function (clsName: string, context: HTMLElement) {
 	return (context || document).getElementsByTagName(clsName);
+};
+
+export const getPosition = function (el: HTMLElement) {
+	var xPos = 0;
+	var yPos = 0;
+
+	while (el) {
+		if (el.tagName == 'BODY') {
+			// deal with browser quirks with body/window/document and page scroll
+			var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+			var yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+			xPos += el.offsetLeft - xScroll + el.clientLeft;
+			yPos += el.offsetTop - yScroll + el.clientTop;
+		} else {
+			// for all other non-BODY elements
+			xPos += el.offsetLeft - el.scrollLeft + el.clientLeft;
+			yPos += el.offsetTop - el.scrollTop + el.clientTop;
+		}
+
+		el = el.offsetParent as HTMLElement;
+	}
+	return {
+		left: xPos,
+		top: yPos,
+	};
 };
 
 export const getBoundingClientRect = function (el: HTMLElement) {
