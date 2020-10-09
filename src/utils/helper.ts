@@ -4,6 +4,38 @@ export const componentUid = function (): number {
 	return ++seed;
 };
 
+/**
+ * left pad two 0
+ * @param {Number} str
+ */
+function leftPad(str: string | number): string {
+	return ('00' + str).substr(String(str).length);
+}
+
+/**
+ * format Date to String
+ * @param {Date} date
+ */
+export function formatDate(date: Date) {
+	return `${date.getFullYear()}-${leftPad(date.getMonth() + 1)}-${leftPad(date.getDate())} ${leftPad(
+		date.getHours()
+	)}:${leftPad(date.getMinutes())}:${leftPad(date.getSeconds())}`;
+}
+
+/**
+ * format video time code
+ * @param seconds
+ */
+export function formatTime(seconds: number): string {
+	return (
+		leftPad(Math.floor(seconds / 3600)) +
+		':' +
+		leftPad(Math.floor((seconds % 3600) / 60)) +
+		':' +
+		leftPad(Math.floor(seconds % 60))
+	);
+}
+
 /// https://github.com/unclechu/node-deep-extend
 function isSpecificValue(val: any) {
 	return val instanceof Date || val instanceof RegExp ? true : false;

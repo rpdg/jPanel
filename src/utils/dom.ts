@@ -159,6 +159,8 @@ export const once = function (evt: string, cb: Function, addToHead?: boolean) {
 };
 
 document.onkeydown = function (evt) {
+	// const charCode = (typeof evt.which == "number") ? evt.which : evt.keyCode
+    // console.log('charCode');
 	let ls = listeners,
 		ss = seeds.slice();
 
