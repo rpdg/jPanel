@@ -203,8 +203,11 @@ export default class Grid<T = {}> {
 	setIndex(t: number, direc?: Direction) {
 		let willNotChangeIndex = false;
 
-		if (this.onBeforeChange) {
-			willNotChangeIndex = !!this.onBeforeChange(direc, t);
+		if (direc != DIRECTIONS.AUTO && this.onBeforeChange) {
+			let v = this.onBeforeChange(direc, t);
+			if (typeof v === 'boolean') {
+				willNotChangeIndex = !v;
+			}
 		}
 
 		if (willNotChangeIndex) {
