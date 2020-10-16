@@ -50,7 +50,7 @@ function xss(obj: any): any {
 }
 
 function makeCache(cacheId: string, sets: BindListOption): BindCache {
-	let template = sets.template || '';
+	let template = (sets.template || '').replace(/\n/g, '');
 	const nullShown = sets.nullShown || '';
 	const rnderFns = template.match(/\${[\w|.]+(:=)+\w+}/g);
 

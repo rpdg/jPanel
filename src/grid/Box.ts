@@ -86,9 +86,9 @@ class Box {
 		}
 	}
 
-	static active(evtName?: string) {
+	static active(i: number = 0, evtName?: string) {
 		if (Box.currentIndex === -1 && Box.boxes.length) {
-			Box.jumpTo(0);
+			Box.jumpTo(i);
 		}
 		Box.eventName = evtName || Box.eventName;
 		x$.on(Box.eventName, Box.keyHolder);
