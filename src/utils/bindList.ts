@@ -14,7 +14,7 @@ export interface ItemFilter {
 export interface BindListOption {
 	list?: any[];
 	template?: string;
-	mode?: string;
+	mode?: ''|'append'|'prepend';
 	storeData?: boolean;
 	itemRender?: ItemRender;
 	itemFilter?: ItemFilter;
@@ -101,7 +101,7 @@ function makeCache(cacheId: string, sets: BindListOption): BindCache {
 	let cache: BindCache = {
 		template: template,
 		__render__: new Function('row', 'i', 'scope', renderEvalStr),
-		mode: sets.mode || '',
+		mode: sets.mode ? sets.mode.toLowerCase() : '',
 		itemRender: sets.itemRender,
 		itemFilter: sets.itemFilter,
 		joiner: sets.joiner || '',
@@ -206,7 +206,15 @@ export default function bindList(elem: HTMLElement, sets: BindListOption | objec
 		}
 	}
 
-	elem.innerHTML = htmlStrs.join(cache.joiner);
+	if (mode === '') {
+		elem.innerHTML = htmlStrs.join(cache.joiner);
+	} else if (mode === 'append') {
+		elem.insertAdjacentHTML('beforeend', htmlStrs.join(cache.joiner));
+	}
+	else if (mode === 'prepend') {
+		elem.insertAdjacentHTML('afterbegin', htmlStrs.join(cache.joiner));
+	}
+
 
 	if (typeof cache.onBound === 'function') {
 		cache.onBound.call(elem, list, sets);
