@@ -4,16 +4,16 @@ import Grid from './Grid';
 type GridMap = { [key: string]: number };
 
 class Box {
-	static boxes: Grid[] = [];
-	static current: Grid = null;
-	static previous: Grid = null;
+	static boxes: Grid<any>[] = [];
+	static current: Grid<any> = null;
+	static previous: Grid<any> = null;
 	static currentIndex: number = -1;
 	static previousIndex: number = -1;
 	static enable: boolean = true;
 	static eventName: string = 'keydown';
 	static gridMap: GridMap = {};
 
-	static addGrid(...grids: Grid[]) {
+	static addGrid(...grids: Grid<any>[]) {
 		for (let i = 0, l = grids.length; i < l; i++) {
 			let grid = grids[i];
 			Box.gridMap[grid.name] = Box.boxes.length;
@@ -38,7 +38,7 @@ class Box {
 		return Box;
 	}
 
-	static getGrid(i: number | string): Grid {
+	static getGrid(i: number | string): Grid<any> {
 		if (typeof i === 'string') {
 			i = Box.gridMap[i];
 			if (i == undefined) return null;
@@ -46,7 +46,7 @@ class Box {
 		return Box.boxes[i];
 	}
 
-	static jumpTo(i: number | string | Grid, j?: number) {
+	static jumpTo(i: number | string | Grid<any>, j?: number) {
 		if (i instanceof Grid) {
 			i = i.boxIndex;
 		} else if (typeof i === 'string') {
