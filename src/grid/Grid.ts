@@ -3,13 +3,15 @@ import { addClass, byId, removeClass, select as x$select } from '../utils/dom';
 import { componentUid, deepExtend } from '../utils/helper';
 import Box from './Box';
 
-const EDGE_RULES = {
+type EdgeStaticRule = 'stop' | 'loop';
+const EDGE_RULES: {
+	[key: string]: EdgeStaticRule;
+} = {
 	STOP: 'stop',
 	LOOP: 'loop',
 };
 
 type Direction = 'up' | 'down' | 'left' | 'right' | 'auto' | 'sync';
-
 const DIRECTIONS: {
 	[key: string]: Direction;
 } = {
@@ -21,10 +23,7 @@ const DIRECTIONS: {
 	SYNC: 'sync',
 };
 
-type EdgeStaticRule = 'stop' | 'loop';
-
 type EdgeHandler<T> = (this: Grid<T>, direct: Direction) => void;
-
 type EdgeRule<T> = {
 	[direct: string]: EdgeHandler<T> | EdgeStaticRule;
 	left?: EdgeHandler<T> | EdgeStaticRule;
@@ -279,7 +278,7 @@ export default class Grid<T = {}> {
 		return this;
 	}
 
-	jumpToBox(i: number | string | Grid, j?: number) {
+	jumpToBox(i: number | string | Grid<any>, j?: number) {
 		if (i === -1) {
 			Box.jumpBack();
 		} else {
