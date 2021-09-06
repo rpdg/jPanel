@@ -111,6 +111,18 @@ export const toggleClass = function (elem: HTMLElement, className: string) {
 	return elem.classList.contains(className) ? removeClass(elem, className) : addClass(elem, className);
 };
 
+export const createFragment = function(htmlStr: string): DocumentFragment {
+	let frag = document.createDocumentFragment();
+	let temp = document.createElement('div');
+	temp.innerHTML = htmlStr;
+	while (temp.firstChild) {
+		frag.appendChild(temp.firstChild);
+	}
+	return frag;
+};
+
+
+
 let seeds: number[] = [];
 let seedMin = 0;
 let seedMax = -1;

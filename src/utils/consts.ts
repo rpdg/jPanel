@@ -1,4 +1,6 @@
-﻿export type KeyMap = {
+﻿import json from '../../package.json';
+
+export type KeyMap = {
 	[code: string]: string;
 };
 
@@ -22,7 +24,7 @@ export const EMPTY_FUNC = () => {};
 
 export const Browser = window.navigator.userAgent;
 export const IsDesktop = Browser.indexOf('Windows; U;') === -1;
-export const Version = '0.21';
+export const Version = json.version ;
 
 export const request = (function () {
 	let ret: any = {},
